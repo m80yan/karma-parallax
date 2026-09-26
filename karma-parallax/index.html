@@ -807,7 +807,7 @@
 
       <div class="layer background-hills">
         <img class="background-slope animatable vertical-squash" data-control="BackgroundHills Slope1 squash" style="--squash-scale:.95" src="assets/background-slope1.svg" alt="">
-        <div class="group-scale-control triangles-size-control" data-control="BackgroundHills Triangles size">
+        <div class="group-scale-control triangles-size-control" data-control="BackgroundHills Triangles size" style="--group-scale:1.7">
           <svg class="background-triangles animatable" data-follow-control="BackgroundHills Slope1 squash" preserveAspectRatio="none" overflow="visible" width="640" height="468.015" viewBox="0 0 640 468.015" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g id="Triangles">
               <path id="Triangle09" fill-rule="evenodd" clip-rule="evenodd" d="M13.6536 8.50977L17.0669 15.3173H10.2402L13.6536 8.50977Z" fill="#ADD57F"/>
@@ -826,7 +826,7 @@
       <div class="layer midground-grass">
         <img class="grass-part grass-2 animatable vertical-squash" data-control="MidgroundGrass Grass2 squash" style="--squash-scale:.92" src="assets/grass-2.svg" alt="">
         <img class="grass-part grass-3 animatable vertical-squash" data-control="MidgroundGrass Grass3 squash" style="--squash-scale:.9" src="assets/grass-3.svg" alt="">
-        <div class="group-scale-control dots-size-control" data-control="MidgroundGrass Dots size">
+        <div class="group-scale-control dots-size-control" data-control="MidgroundGrass Dots size" style="--group-scale:1.7">
         <div class="grass-dots-follow animatable" data-follow-control="MidgroundGrass Grass3 squash">
         <span class="grass-dot" style="left:409.8px;top:84.53px;animation-delay:0s"></span>
         <span class="grass-dot" style="left:440.72px;top:138.99px;animation-delay:.2s"></span>
@@ -1188,6 +1188,7 @@
       const isCloud = target.classList.contains('cloud');
       const isScore = target === scoreEl;
       const isGroupScale = target.classList.contains('group-scale-control');
+      const groupScale = isGroupScale ? (target.style.getPropertyValue('--group-scale') || '1') : '1';
       const pos = isCloud ? cloudScreenPosition(target) : { x: 0, y: 0, width: 0, height: 0 };
       const scorePos = isScore ? scoreScreenPosition() : { x: 0, y: 0 };
       card.className = 'control-card';
@@ -1216,8 +1217,8 @@
         ${isGroupScale ? `
         <label class="control-row" for="${id}-group-scale">
           <span>Size</span>
-          <input id="${id}-group-scale" data-kind="groupScale" data-index="${i}" type="range" min="0.5" max="3" step="0.05" value="1">
-          <output>1.00</output>
+          <input id="${id}-group-scale" data-kind="groupScale" data-index="${i}" type="range" min="0.5" max="3" step="0.05" value="${groupScale}">
+          <output>${Number(groupScale).toFixed(2)}</output>
         </label>
         ` : ''}
         ${isCloud ? `
@@ -1366,6 +1367,9 @@
         target.dataset.initialX = Math.round(pos.x);
         target.dataset.initialY = Math.round(pos.y);
       }
+      if (target.classList.contains('group-scale-control')) {
+        target.dataset.initialGroupScale = target.style.getPropertyValue('--group-scale') || '1';
+      }
       const card = controlCard(target, i);
       cards.push(card);
       controlList.appendChild(card);
@@ -1414,7 +1418,7 @@
         const target = controlled[Number(input.dataset.index)];
         if (input.dataset.kind === 'rhythm') input.value = 2;
         if (input.dataset.kind === 'speed' || input.dataset.kind === 'direction') input.value = 1;
-        if (input.dataset.kind === 'groupScale') input.value = 1;
+        if (input.dataset.kind === 'groupScale') input.value = target.dataset.initialGroupScale || 1;
         if (input.dataset.kind === 'x') input.value = target.dataset.initialX;
         if (input.dataset.kind === 'y') input.value = target.dataset.initialY;
         if (input.type === 'number' && input.dataset.default) input.value = input.dataset.default;
