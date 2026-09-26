@@ -235,8 +235,7 @@
     .group-scale-control {
       position: absolute;
       inset: 0;
-      transform: scale(var(--group-scale, 1));
-      transform-origin: center;
+      --group-scale: 1;
       pointer-events: auto;
       cursor: pointer;
     }
@@ -247,6 +246,21 @@
       animation: squashFollower var(--base-dur) ease-in-out infinite;
       will-change: transform;
     }
+
+    .background-triangles #Triangles path {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: triangleTwinkle 3.2s ease-in-out infinite;
+    }
+
+    .background-triangles #Triangles path:nth-child(2) { animation-delay: .25s; }
+    .background-triangles #Triangles path:nth-child(3) { animation-delay: .5s; }
+    .background-triangles #Triangles path:nth-child(4) { animation-delay: .75s; }
+    .background-triangles #Triangles path:nth-child(5) { animation-delay: 1s; }
+    .background-triangles #Triangles path:nth-child(6) { animation-delay: 1.25s; }
+    .background-triangles #Triangles path:nth-child(7) { animation-delay: 1.5s; }
+    .background-triangles #Triangles path:nth-child(8) { animation-delay: 1.75s; }
+    .background-triangles #Triangles path:nth-child(9) { animation-delay: 2s; }
 
     .midground-grass {
       left: 0;
@@ -565,10 +579,16 @@
       50% { opacity: 0.72; transform: scale(1.04); }
     }
 
+    @keyframes triangleTwinkle {
+      0%, 100% { opacity: .32; transform: scale(calc(.82 * var(--group-scale, 1))); }
+      45% { opacity: 1; transform: scale(calc(1.18 * var(--group-scale, 1))); }
+      70% { opacity: .55; transform: scale(calc(.96 * var(--group-scale, 1))); }
+    }
+
     @keyframes dotTwinkle {
-      0%, 100% { opacity: 0.22; transform: scale(0.72); }
-      45% { opacity: 1; transform: scale(1.45); }
-      70% { opacity: 0.48; transform: scale(0.9); }
+      0%, 100% { opacity: 0.22; transform: scale(calc(0.72 * var(--group-scale, 1))); }
+      45% { opacity: 1; transform: scale(calc(1.45 * var(--group-scale, 1))); }
+      70% { opacity: 0.48; transform: scale(calc(0.9 * var(--group-scale, 1))); }
     }
 
     @keyframes tDigitPopIn {
@@ -787,14 +807,26 @@
 
       <div class="layer background-hills">
         <img class="background-slope animatable vertical-squash" data-control="BackgroundHills Slope1 squash" style="--squash-scale:.95" src="assets/background-slope1.svg" alt="">
-        <div class="group-scale-control" data-control="BackgroundHills Triangles size">
-          <img class="background-triangles animatable" data-follow-control="BackgroundHills Slope1 squash" src="assets/background-triangles.svg" alt="">
+        <div class="group-scale-control triangles-size-control" data-control="BackgroundHills Triangles size">
+          <svg class="background-triangles animatable" data-follow-control="BackgroundHills Slope1 squash" preserveAspectRatio="none" overflow="visible" width="640" height="468.015" viewBox="0 0 640 468.015" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g id="Triangles">
+              <path id="Triangle09" fill-rule="evenodd" clip-rule="evenodd" d="M13.6536 8.50977L17.0669 15.3173H10.2402L13.6536 8.50977Z" fill="#ADD57F"/>
+              <path id="Triangle08" fill-rule="evenodd" clip-rule="evenodd" d="M52.9065 39.1426L56.3198 45.9501H49.4932L52.9065 39.1426Z" fill="#ADD57F"/>
+              <path id="Triangle07" fill-rule="evenodd" clip-rule="evenodd" d="M63.4133 40.8652L66.8267 47.6727H60L63.4133 40.8652Z" fill="#ADD57F"/>
+              <path id="Triangle06" fill-rule="evenodd" clip-rule="evenodd" d="M133.12 38.293L136.534 45.1005H129.707L133.12 38.293Z" fill="#ADD57F"/>
+              <path id="Triangle05" fill-rule="evenodd" clip-rule="evenodd" d="M116.053 55.3105L119.466 62.118H112.64L116.053 55.3105Z" fill="#ADD57F"/>
+              <path id="Triangle04" fill-rule="evenodd" clip-rule="evenodd" d="M90.4534 114.877L93.8667 121.684H87.04L90.4534 114.877Z" fill="#ADD57F"/>
+              <path id="Triangle03" fill-rule="evenodd" clip-rule="evenodd" d="M235.52 140.405L238.933 147.212H232.107L235.52 140.405Z" fill="#ADD57F"/>
+              <path id="Triangle02" fill-rule="evenodd" clip-rule="evenodd" d="M310.614 183.803L314.027 190.61H307.2L310.614 183.803Z" fill="#ADD57F"/>
+              <path id="Triangle01" fill-rule="evenodd" clip-rule="evenodd" d="M174.08 64.6719L177.494 71.4794H170.667L174.08 64.6719Z" fill="#ADD57F"/>
+            </g>
+          </svg>
         </div>
       </div>
       <div class="layer midground-grass">
         <img class="grass-part grass-2 animatable vertical-squash" data-control="MidgroundGrass Grass2 squash" style="--squash-scale:.92" src="assets/grass-2.svg" alt="">
         <img class="grass-part grass-3 animatable vertical-squash" data-control="MidgroundGrass Grass3 squash" style="--squash-scale:.9" src="assets/grass-3.svg" alt="">
-        <div class="group-scale-control" data-control="MidgroundGrass Dots size">
+        <div class="group-scale-control dots-size-control" data-control="MidgroundGrass Dots size">
         <div class="grass-dots-follow animatable" data-follow-control="MidgroundGrass Grass3 squash">
         <span class="grass-dot" style="left:409.8px;top:84.53px;animation-delay:0s"></span>
         <span class="grass-dot" style="left:440.72px;top:138.99px;animation-delay:.2s"></span>
