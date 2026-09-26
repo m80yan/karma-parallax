@@ -18,6 +18,10 @@
       --prototype-height: 1136px;
       --mockup-width: 767px;
       --mockup-height: 1380px;
+      --devices-width: 1694px;
+      --devices-height: 1380px;
+      --embed-padding: 24px;
+      --stage-scale: 1;
       --screen-x: 67px;
       --screen-y: 239px;
       --screen-bg: rgb(171, 212, 126);
@@ -50,24 +54,31 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 28px;
-      padding: 32px;
-      background: #171717;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
       color: #d8d8d8;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .stage {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 0;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .devices {
       display: flex;
       align-items: flex-start;
       gap: 160px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: var(--devices-width);
+      height: var(--devices-height);
+      transform: translate(-50%, -50%) scale(var(--stage-scale));
+      transform-origin: center;
     }
 
     .device-frame {
@@ -857,13 +868,13 @@
       </div>
     </main>
     </div>
-    <aside class="compiler" aria-label="Animation compiler controls">
+    <aside class="compiler is-minimized" aria-label="Animation compiler controls">
       <div class="compiler-header">
         <div>
           <div class="compiler-label">Green phone</div>
           <h2>Animation Compiler</h2>
         </div>
-        <button type="button" id="toggleCompiler">Minimize</button>
+        <button type="button" id="toggleCompiler">Expand</button>
       </div>
       <div class="compiler-body">
         <p>Each moving layer compiles to CSS variables: rate, direction, and rhythm. Changes apply live.</p>
@@ -953,6 +964,19 @@
     let paused = false;
     let selectedCard = null;
     let selectedTarget = null;
+
+    function updateStageScale() {
+      const padding = 24;
+      const scale = Math.min(
+        (window.innerWidth - padding) / 1694,
+        (window.innerHeight - padding) / 1380,
+        1
+      );
+      document.documentElement.style.setProperty('--stage-scale', Math.max(scale, 0.1));
+    }
+
+    updateStageScale();
+    window.addEventListener('resize', updateStageScale);
 
     function matrixTranslateX(target) {
       const transform = getComputedStyle(target).transform;
