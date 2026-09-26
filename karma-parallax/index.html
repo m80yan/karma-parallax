@@ -42,8 +42,8 @@
       --score-font-size: 72px;
       --score-font-weight: 400;
       --score-line-height: 1;
-      --score-letter-space: 0px;
-      --score-digit-width: 0.54em;
+      --score-letter-space: 2px;
+      --score-digit-width: 0.58em;
     }
 
     * { box-sizing: border-box; }
@@ -73,12 +73,12 @@
       align-items: flex-start;
       gap: 160px;
       position: absolute;
-      left: 50%;
+      left: 0;
       top: 50%;
       width: var(--devices-width);
       height: var(--devices-height);
-      transform: translate(-50%, -50%) scale(var(--stage-scale));
-      transform-origin: center;
+      transform: translateY(-50%) scale(var(--stage-scale));
+      transform-origin: left center;
     }
 
     .device-frame {
@@ -86,7 +86,7 @@
       height: var(--mockup-height);
       position: relative;
       overflow: visible;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+      box-shadow: none;
     }
 
     .phone-mockup {
@@ -591,7 +591,12 @@
       left: 12px;
       top: 12px;
       z-index: 100;
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      box-shadow: none;
+    }
+
+    .compiler:not(.is-minimized) {
+      left: auto;
+      right: 12px;
     }
 
     .compiler.is-minimized {
@@ -812,9 +817,9 @@
         </div>
         <img class="horse animatable" data-control="Horse icon pulse" src="assets/horse.svg" alt="">
         <div class="rays animatable" data-control="Lens flare group">
-          <img class="ray" style="--flare-x:56px;--flare-y:74px;width:32px;height:32px" src="assets/rays-01.svg" alt="">
-          <img class="ray" style="--flare-x:86px;--flare-y:114px;width:53px;height:53px" src="assets/rays-02.svg" alt="">
-          <img class="ray" style="--flare-x:116px;--flare-y:154px;width:42px;height:42px" src="assets/rays-03.svg" alt="">
+          <img class="ray" style="--flare-x:16px;--flare-y:16px;width:32px;height:32px" src="assets/rays-01.svg" alt="">
+          <img class="ray" style="--flare-x:60.5px;--flare-y:94.3px;width:53px;height:53px" src="assets/rays-02.svg" alt="">
+          <img class="ray" style="--flare-x:27px;--flare-y:36.8px;width:42px;height:42px" src="assets/rays-03.svg" alt="">
         </div>
         <div class="copy">
           <h1>Your activity shapes your Karma.</h1>
@@ -966,12 +971,7 @@
     let selectedTarget = null;
 
     function updateStageScale() {
-      const padding = 24;
-      const scale = Math.min(
-        (window.innerWidth - padding) / 1694,
-        (window.innerHeight - padding) / 1380,
-        1
-      );
+      const scale = window.innerWidth / 1694;
       document.documentElement.style.setProperty('--stage-scale', Math.max(scale, 0.1));
     }
 
@@ -1202,7 +1202,7 @@
         </label>
         <label class="control-row" for="${id}-score-letter-space">
           <span>Letter</span>
-          <input id="${id}-score-letter-space" data-kind="scoreLetterSpace" data-index="${i}" data-default="0" type="number" min="-20" max="40" step="0.5" value="0">
+          <input id="${id}-score-letter-space" data-kind="scoreLetterSpace" data-index="${i}" data-default="2" type="number" min="-20" max="40" step="0.5" value="2">
           <output>px</output>
         </label>
         <label class="control-row" for="${id}-score-line-height">
