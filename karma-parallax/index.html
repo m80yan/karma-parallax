@@ -400,12 +400,12 @@
 
     .rays {
       position: absolute;
-      left: 164.5px;
-      top: 226.7px;
+      left: 130.5px;
+      top: 130.5px;
       width: 0;
       height: 0;
       --base-dur: var(--motion-rays);
-      animation: flarePulse var(--motion-rays) ease-in-out infinite;
+      animation: flarePointerSweep var(--motion-rays) ease-in-out infinite;
       transform-origin: 0 0;
     }
 
@@ -416,6 +416,12 @@
       top: var(--flare-y);
       transform: translate(-50%, -50%);
       transform-origin: center;
+      animation-name: flarePointerItem;
+      animation-duration: inherit;
+      animation-timing-function: inherit;
+      animation-direction: inherit;
+      animation-iteration-count: inherit;
+      will-change: transform, opacity, filter;
     }
 
     .score {
@@ -577,6 +583,40 @@
     @keyframes flarePulse {
       0%, 100% { opacity: 0.42; transform: scale(0.96); }
       50% { opacity: 0.72; transform: scale(1.04); }
+    }
+
+    @keyframes flarePointerSweep {
+      0%, 100% { transform: rotate(0deg); }
+      34% { transform: rotate(0deg); }
+      68% { transform: rotate(-18deg); }
+    }
+
+    @keyframes flarePointerItem {
+      0%, 100% {
+        opacity: 0.5;
+        filter: blur(0);
+        transform: translate(-50%, -50%) translate(0, 0) rotate(-24deg) scaleY(1) rotate(24deg);
+      }
+      34% {
+        opacity: 0.82;
+        filter: blur(0.2px);
+        transform:
+          translate(-50%, -50%)
+          translate(calc(var(--flare-x) * 0.28), calc(var(--flare-y) * 0.28))
+          rotate(-24deg)
+          scaleY(1.58)
+          rotate(24deg);
+      }
+      68% {
+        opacity: 0.7;
+        filter: blur(0.15px);
+        transform:
+          translate(-50%, -50%)
+          translate(calc(var(--flare-x) * 0.28), calc(var(--flare-y) * 0.28))
+          rotate(-24deg)
+          scaleY(1.48)
+          rotate(24deg);
+      }
     }
 
     @keyframes triangleTwinkle {
@@ -862,9 +902,9 @@
         </div>
         <img class="horse animatable" data-control="Horse icon pulse" src="assets/horse.svg" alt="">
         <div class="rays animatable" data-control="Lens flare group">
-          <img class="ray" style="--flare-x:16px;--flare-y:16px;width:32px;height:32px" src="assets/rays-01.svg" alt="">
-          <img class="ray" style="--flare-x:60.5px;--flare-y:94.3px;width:53px;height:53px" src="assets/rays-02.svg" alt="">
-          <img class="ray" style="--flare-x:27px;--flare-y:36.8px;width:42px;height:42px" src="assets/rays-03.svg" alt="">
+          <img class="ray" style="--flare-x:50px;--flare-y:112.2px;width:32px;height:32px" src="assets/rays-01.svg" alt="">
+          <img class="ray" style="--flare-x:61px;--flare-y:133px;width:42px;height:42px" src="assets/rays-03.svg" alt="">
+          <img class="ray" style="--flare-x:94.5px;--flare-y:190.5px;width:53px;height:53px" src="assets/rays-02.svg" alt="">
         </div>
         <div class="copy">
           <h1>Your activity shapes your Karma.</h1>
