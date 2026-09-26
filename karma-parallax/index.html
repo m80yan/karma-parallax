@@ -232,6 +232,15 @@
       height: 468.02px;
     }
 
+    .group-scale-control {
+      position: absolute;
+      inset: 0;
+      transform: scale(var(--group-scale, 1));
+      transform-origin: center;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
     .background-triangles {
       --base-dur: 5.6s;
       --follow-y: 12px;
@@ -377,8 +386,8 @@
 
     .rays {
       position: absolute;
-      left: 130.5px;
-      top: 130.5px;
+      left: 164.5px;
+      top: 226.7px;
       width: 0;
       height: 0;
       --base-dur: var(--motion-rays);
@@ -778,11 +787,14 @@
 
       <div class="layer background-hills">
         <img class="background-slope animatable vertical-squash" data-control="BackgroundHills Slope1 squash" style="--squash-scale:.95" src="assets/background-slope1.svg" alt="">
-        <img class="background-triangles animatable" data-follow-control="BackgroundHills Slope1 squash" src="assets/background-triangles.svg" alt="">
+        <div class="group-scale-control" data-control="BackgroundHills Triangles size">
+          <img class="background-triangles animatable" data-follow-control="BackgroundHills Slope1 squash" src="assets/background-triangles.svg" alt="">
+        </div>
       </div>
       <div class="layer midground-grass">
         <img class="grass-part grass-2 animatable vertical-squash" data-control="MidgroundGrass Grass2 squash" style="--squash-scale:.92" src="assets/grass-2.svg" alt="">
         <img class="grass-part grass-3 animatable vertical-squash" data-control="MidgroundGrass Grass3 squash" style="--squash-scale:.9" src="assets/grass-3.svg" alt="">
+        <div class="group-scale-control" data-control="MidgroundGrass Dots size">
         <div class="grass-dots-follow animatable" data-follow-control="MidgroundGrass Grass3 squash">
         <span class="grass-dot" style="left:409.8px;top:84.53px;animation-delay:0s"></span>
         <span class="grass-dot" style="left:440.72px;top:138.99px;animation-delay:.2s"></span>
@@ -798,6 +810,7 @@
         <span class="grass-dot" style="left:412.64px;top:77.72px;animation-delay:2.2s"></span>
         <span class="grass-dot" style="left:334.13px;top:134.74px;animation-delay:2.4s"></span>
         <span class="grass-dot" style="left:112.27px;top:117.72px;animation-delay:2.6s"></span>
+        </div>
         </div>
       </div>
 
@@ -1142,6 +1155,7 @@
       const card = document.createElement('section');
       const isCloud = target.classList.contains('cloud');
       const isScore = target === scoreEl;
+      const isGroupScale = target.classList.contains('group-scale-control');
       const pos = isCloud ? cloudScreenPosition(target) : { x: 0, y: 0, width: 0, height: 0 };
       const scorePos = isScore ? scoreScreenPosition() : { x: 0, y: 0 };
       card.className = 'control-card';
@@ -1167,6 +1181,13 @@
           <input id="${id}-rhythm" data-kind="rhythm" data-index="${i}" type="range" min="0" max="4" step="1" value="2">
           <output>ease</output>
         </label>
+        ${isGroupScale ? `
+        <label class="control-row" for="${id}-group-scale">
+          <span>Size</span>
+          <input id="${id}-group-scale" data-kind="groupScale" data-index="${i}" type="range" min="0.5" max="3" step="0.05" value="1">
+          <output>1.00</output>
+        </label>
+        ` : ''}
         ${isCloud ? `
         <label class="control-row" for="${id}-x">
           <span>X</span>
@@ -1251,6 +1272,10 @@
         const value = Number(input.value);
         target.style.setProperty('--ease', easeMap[value]);
         output.textContent = ['linear', 'soft', 'ease', 'spring', 'step'][value];
+      }
+      if (input.dataset.kind === 'groupScale') {
+        target.style.setProperty('--group-scale', input.value);
+        output.textContent = Number(input.value).toFixed(2);
       }
       if (input.dataset.kind === 'x') {
         const clouds = document.querySelector('.clouds');
@@ -1357,6 +1382,7 @@
         const target = controlled[Number(input.dataset.index)];
         if (input.dataset.kind === 'rhythm') input.value = 2;
         if (input.dataset.kind === 'speed' || input.dataset.kind === 'direction') input.value = 1;
+        if (input.dataset.kind === 'groupScale') input.value = 1;
         if (input.dataset.kind === 'x') input.value = target.dataset.initialX;
         if (input.dataset.kind === 'y') input.value = target.dataset.initialY;
         if (input.type === 'number' && input.dataset.default) input.value = input.dataset.default;
