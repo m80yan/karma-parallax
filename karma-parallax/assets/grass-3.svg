@@ -1,0 +1,26 @@
+<svg width="640" height="364" viewBox="0 0 640 364" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Karma splash green">
+<g clip-path="url(#clip0_0_1)">
+<g id="MidgroundGrass">
+<g id="Grass3">
+<path d="M0 59.5655C0 59.5655 21.8173 62.966 34.2367 68.2212C66.8136 82.0058 127.71 106.717 255.922 102.574C309.08 104.858 471.383 45.1704 555.298 15.1079C589.751 2.64545 640 0 640 0V365.903H0V59.5655Z" fill="#7BB443"/>
+<path d="M0 59.5655C0 59.5655 21.8173 62.966 34.2367 68.2212C66.8136 82.0058 127.71 106.717 255.922 102.574C309.08 104.858 471.383 45.1704 555.298 15.1079C589.751 2.64545 640 0 640 0V365.903H0V59.5655Z" fill="url(#paint0_radial_0_1)"/>
+<path d="M0 59.5655C0 59.5655 21.8173 62.966 34.2367 68.2212C66.8136 82.0058 127.71 106.717 255.922 102.574C309.08 104.858 471.383 45.1704 555.298 15.1079C589.751 2.64545 640 0 640 0V365.903H0V59.5655Z" fill="url(#paint1_radial_0_1)"/>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<radialGradient id="paint0_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(19 61.0439) rotate(90) scale(116 202.896)">
+<stop stop-color="#5F9727"/>
+<stop offset="1" stop-color="#7BB443"/>
+</radialGradient>
+<radialGradient id="paint1_radial_0_1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(616 -7.95606) rotate(90) scale(94.5 165.29)">
+<stop stop-color="#5F9727"/>
+<stop offset="1" stop-color="#7BB443" stop-opacity="0"/>
+</radialGradient>
+<clipPath id="clip0_0_1">
+<rect y="-772" width="640" height="1136" fill="white"/>
+</clipPath>
+</defs>
+</svg>

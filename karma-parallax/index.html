@@ -1,0 +1,1378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karma Parallax Prototype</title>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/Inter-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --prototype-width: 640px;
+      --prototype-height: 1136px;
+      --mockup-width: 767px;
+      --mockup-height: 1380px;
+      --screen-x: 67px;
+      --screen-y: 239px;
+      --screen-bg: rgb(171, 212, 126);
+      --karma-green: rgb(11, 116, 63);
+      --motion-cycle: 8s;
+      --motion-breathe: 4.8s;
+      --motion-clouds: 18s;
+      --motion-score: 500ms;
+      --motion-rays: 7s;
+      --motion-sun: 12s;
+      --cloud-edge-pad: 120px;
+      --parallax-far: 2px;
+      --parallax-mid: 5px;
+      --parallax-near: 10px;
+      --push-scale: 1.05;
+      --font-display: "PingFang SC", "PingFangSC", "Helvetica Neue", Arial, sans-serif;
+      --font-score: Inter, "Helvetica Neue", Arial, sans-serif;
+      --score-font-size: 72px;
+      --score-font-weight: 400;
+      --score-line-height: 1;
+      --score-letter-space: 0px;
+      --score-digit-width: 0.54em;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      padding: 32px;
+      background: #171717;
+      color: #d8d8d8;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .stage {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .devices {
+      display: flex;
+      align-items: flex-start;
+      gap: 160px;
+    }
+
+    .device-frame {
+      width: var(--mockup-width);
+      height: var(--mockup-height);
+      position: relative;
+      overflow: visible;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+    }
+
+    .phone-mockup {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 767px;
+      height: 1375px;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .phone-mockup img {
+      position: absolute;
+      left: -48.74%;
+      top: -28.14%;
+      width: 333.85%;
+      height: 186.18%;
+      max-width: none;
+      display: block;
+    }
+
+    .phone-mockup--yellow {
+      left: 1px;
+    }
+
+    .phone-mockup--yellow img {
+      left: -176.9%;
+    }
+
+    .phone-shell {
+      width: var(--prototype-width);
+      height: var(--prototype-height);
+      position: absolute;
+      left: var(--screen-x);
+      top: var(--screen-y);
+      overflow: hidden;
+      background: var(--screen-bg);
+      transform-origin: center;
+      z-index: 2;
+    }
+
+    .phone-shell--yellow {
+      left: 68px;
+      background: #ffbf47;
+    }
+
+    .phone-shell--yellow .screen {
+      background: #ffbf47;
+    }
+
+    .animatable {
+      --speed: 1;
+      --direction: normal;
+      --ease: ease-in-out;
+      animation-duration: calc(var(--base-dur) / max(var(--speed), 0.05)) !important;
+      animation-direction: var(--direction) !important;
+      animation-timing-function: var(--ease) !important;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--screen-bg);
+    }
+
+    .layer {
+      position: absolute;
+      pointer-events: none;
+      transform-origin: center;
+    }
+
+    .layer img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .clickable-region,
+    [data-control] {
+      pointer-events: auto;
+    }
+
+    [data-control] {
+      cursor: pointer;
+    }
+
+    .layer img[data-control] {
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    [data-control] > img {
+      pointer-events: none;
+    }
+
+    .sky {
+      inset: 0 0 0 0;
+      background: var(--screen-bg);
+    }
+
+    .far-hills {
+      left: 0;
+      top: 707.5px;
+      width: 640px;
+      height: 428.5px;
+      overflow: hidden;
+      clip-path: path("M0 45.6659C0 45.6659 196.635 55.0641 294.952 44.5412C409.968 32.2312 640 0 640 0V428.498H0V45.6659Z");
+    }
+
+    .far-hills-texture {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: calc(100% + 32px);
+      height: 100%;
+      --base-dur: 9s;
+      background-image: url("assets/far-background-texture-tile.svg");
+      background-repeat: repeat;
+      background-size: 32px 32px;
+      animation: farTextureDrift 9s linear infinite;
+      will-change: transform;
+    }
+
+    .background-hills {
+      left: 0;
+      top: 667.13px;
+      width: 640px;
+      height: 468.02px;
+    }
+
+    .background-slope,
+    .background-triangles {
+      position: absolute;
+      inset: 0;
+      width: 640px;
+      height: 468.02px;
+    }
+
+    .background-triangles {
+      --base-dur: 5.6s;
+      --follow-y: 12px;
+      animation: squashFollower var(--base-dur) ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .midground-grass {
+      left: 0;
+      top: 772px;
+      width: 640px;
+      height: 366.48px;
+    }
+
+    .grass-part {
+      position: absolute;
+      left: 0;
+      width: 640px;
+      object-fit: fill;
+      transform-origin: center bottom;
+    }
+
+    .grass-2 {
+      top: 31px;
+      height: 335.48px;
+    }
+
+    .grass-3 {
+      top: 0;
+      height: 365.9px;
+    }
+
+    .vertical-squash {
+      --base-dur: 5.6s;
+      --squash-scale: .95;
+      animation: verticalSquash var(--base-dur) ease-in-out infinite;
+      transform-origin: center bottom;
+      will-change: transform;
+    }
+
+    .grass-dot {
+      position: absolute;
+      width: 5.12px;
+      height: 5.12px;
+      border-radius: 50%;
+      background: rgba(181, 219, 116, 0.86);
+      transform-origin: center;
+      --base-dur: 2.8s;
+      animation: dotTwinkle 2.8s ease-in-out infinite;
+    }
+
+    .grass-dots-follow {
+      position: absolute;
+      inset: 0;
+      --base-dur: 5.6s;
+      --follow-y: 20px;
+      animation: squashFollower var(--base-dur) ease-in-out infinite;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .foreground-bushes {
+      left: 0;
+      top: 857px;
+      width: 640px;
+      height: 279px;
+    }
+
+    .bush-item {
+      position: absolute;
+      transform-origin: center bottom;
+      --base-dur: var(--motion-breathe);
+      animation: bushBreathe var(--motion-breathe) ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .bush-ball {
+      transform-origin: center;
+      animation-name: bushBallMotion;
+      will-change: transform;
+    }
+
+    .bush-base {
+      position: absolute;
+      left: 0;
+      top: 97.05px;
+      width: 640px;
+      height: 182.1px;
+      animation: none;
+    }
+
+    .clouds {
+      left: 39.14px;
+      top: 496.65px;
+      width: 650.35px;
+      height: 90.66px;
+      overflow: visible;
+    }
+
+    .cloud {
+      position: absolute;
+      --base-dur: var(--motion-clouds);
+      animation: cloudDriftToRight var(--motion-clouds) linear infinite;
+    }
+
+    .cloud.to-left { animation-name: cloudDriftToLeft; }
+    .cloud.to-right { animation-name: cloudDriftToRight; }
+
+    .info {
+      position: absolute;
+      left: 34.5px;
+      top: 90.5px;
+      width: 564.5px;
+      height: 347.5px;
+      color: var(--karma-green);
+      pointer-events: none;
+    }
+
+    .sun-wrap {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 261px;
+      height: 261px;
+      transform-origin: center;
+    }
+
+    .sun-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .spin-rays-green {
+      --spin-rays-angle: 0deg;
+      transform: rotate(var(--spin-rays-angle));
+      transform-origin: center;
+      transition: transform 420ms cubic-bezier(.34, 1.45, .64, 1);
+      will-change: transform;
+    }
+
+    .rays {
+      position: absolute;
+      left: 130.5px;
+      top: 130.5px;
+      width: 0;
+      height: 0;
+      --base-dur: var(--motion-rays);
+      animation: flarePulse var(--motion-rays) ease-in-out infinite;
+      transform-origin: 0 0;
+    }
+
+    .ray {
+      position: absolute;
+      display: block;
+      left: var(--flare-x);
+      top: var(--flare-y);
+      transform: translate(-50%, -50%);
+      transform-origin: center;
+    }
+
+    .score {
+      position: absolute;
+      left: 70.22px;
+      top: 54.5px;
+      width: 124px;
+      height: 87px;
+      font-family: var(--font-score);
+      font-size: var(--score-font-size);
+      line-height: var(--score-line-height);
+      font-weight: var(--score-font-weight);
+      letter-spacing: 0;
+      color: var(--karma-green);
+      overflow: visible;
+    }
+
+    .score-value {
+      display: grid;
+      grid-template-columns: repeat(var(--score-digits, 2), var(--score-digit-width));
+      column-gap: var(--score-letter-space);
+      align-items: baseline;
+      justify-content: start;
+      width: max-content;
+      height: 100%;
+      margin: 0 auto;
+      transform-origin: center;
+      --base-dur: var(--motion-score);
+      --digit-distance: 8px;
+      --digit-stagger: 70ms;
+      --digit-blur: 2px;
+      --digit-dir-x: 0;
+      --digit-dir-y: 1;
+      animation: none;
+    }
+
+    .score-digit {
+      display: inline-block;
+      width: var(--score-digit-width);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-hundreds:empty {
+      display: none;
+    }
+
+    .score-ones-group {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      width: var(--score-digit-width);
+      overflow: visible;
+    }
+
+    .score-ones {
+      display: inline-block;
+      will-change: transform, opacity, filter;
+    }
+
+    .score-ones-group.is-animating .score-ones {
+      animation: tDigitPopIn calc(var(--motion-score) / max(var(--speed), 0.05)) var(--ease) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .score-ones-group .score-ones { animation: none !important; }
+    }
+
+    .horse {
+      position: absolute;
+      left: 109.5px;
+      top: 150.5px;
+      width: 42px;
+      height: 42px;
+      --base-dur: 5s;
+      animation: horsePulse 5s ease-in-out infinite;
+    }
+
+    .copy {
+      position: absolute;
+      left: 291.5px;
+      top: 31.5px;
+      width: 273px;
+      height: 286px;
+      font-family: var(--font-display);
+      color: var(--karma-green);
+    }
+
+    .copy h1 {
+      margin: 0 0 40px;
+      font-size: 28px;
+      line-height: 40px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .copy ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 24px;
+      line-height: 40px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .copy li {
+      margin: 0;
+    }
+
+    .copy li::before {
+      content: "· ";
+      margin-right: 0;
+    }
+
+    .copy li.is-active::before {
+      content: "● ";
+    }
+
+    @keyframes bushBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.035); }
+    }
+
+    @keyframes bushBallMotion {
+      0%, 100% { transform: rotate(-4deg) scale(1); }
+      50% { transform: rotate(5deg) scale(1.035); }
+    }
+
+    @keyframes verticalSquash {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(var(--squash-scale)); }
+    }
+
+    @keyframes squashFollower {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(var(--follow-y)); }
+    }
+
+    @keyframes cloudDriftToRight {
+      0% { transform: translateX(var(--cloud-start)); }
+      100% { transform: translateX(var(--cloud-end)); }
+    }
+
+    @keyframes cloudDriftToLeft {
+      0% { transform: translateX(var(--cloud-start)); }
+      100% { transform: translateX(var(--cloud-end)); }
+    }
+
+    @keyframes farTextureDrift {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-32px); }
+    }
+
+    @keyframes sunRotate {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes flarePulse {
+      0%, 100% { opacity: 0.42; transform: scale(0.96); }
+      50% { opacity: 0.72; transform: scale(1.04); }
+    }
+
+    @keyframes dotTwinkle {
+      0%, 100% { opacity: 0.22; transform: scale(0.72); }
+      45% { opacity: 1; transform: scale(1.45); }
+      70% { opacity: 0.48; transform: scale(0.9); }
+    }
+
+    @keyframes tDigitPopIn {
+      0% {
+        transform: translate(
+          calc(var(--digit-distance) * var(--digit-dir-x)),
+          calc(var(--digit-distance) * var(--digit-dir-y))
+        );
+        opacity: 0;
+        filter: blur(var(--digit-blur));
+      }
+      100% { transform: translate(0, 0); opacity: 1; filter: blur(0); }
+    }
+
+    @keyframes horsePulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    .compiler {
+      width: 360px;
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+      padding: 18px;
+      border: 1px solid #313131;
+      background: #202020;
+      color: #f1f1f1;
+      position: fixed;
+      left: 12px;
+      top: 12px;
+      z-index: 100;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .compiler.is-minimized {
+      width: auto;
+      max-height: none;
+      overflow: visible;
+      padding: 10px 12px;
+    }
+
+    .compiler.is-minimized .compiler-body {
+      display: none;
+    }
+
+    .compiler-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .compiler h2 {
+      margin: 0 0 4px;
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .compiler-label {
+      color: #7fdc55;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .compiler p {
+      margin: 0 0 16px;
+      color: #a8a8a8;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .compiler-search {
+      width: 100%;
+      margin: 0 0 10px;
+      padding: 9px 10px;
+      border: 1px solid #3d3d3d;
+      background: #171717;
+      color: #f1f1f1;
+      font: inherit;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .compiler-search:focus {
+      border-color: #7fdc55;
+    }
+
+    .control-card {
+      padding: 12px 0;
+      border-top: 1px solid #333;
+    }
+
+    .control-card.is-hidden {
+      display: none;
+    }
+
+    .control-card.is-active {
+      border-top-color: #7fdc55;
+    }
+
+    .control-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #ffffff;
+    }
+
+    .control-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .control-title strong {
+      margin: 0;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: 68px 1fr 42px;
+      align-items: center;
+      gap: 8px;
+      margin: 7px 0;
+      color: #bdbdbd;
+      font-size: 11px;
+    }
+
+    .control-row input[type="range"] {
+      width: 100%;
+      accent-color: #7fdc55;
+    }
+
+    .control-row input[type="number"] {
+      width: 100%;
+      min-width: 0;
+      padding: 5px 7px;
+      border: 1px solid #3d3d3d;
+      background: #171717;
+      color: #f1f1f1;
+      font: inherit;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+
+    .control-row input[type="number"]:focus {
+      border-color: #7fdc55;
+    }
+
+    .control-row output {
+      text-align: right;
+      color: #dcdcdc;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .compiler-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .compiler button {
+      border: 1px solid #3f3f3f;
+      background: #2c2c2c;
+      color: #f3f3f3;
+      padding: 7px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .compiler button:hover {
+      background: #383838;
+    }
+
+    .selected-target {
+      outline: 2px solid #ffffff;
+      outline-offset: 4px;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+      z-index: 20;
+    }
+
+    .selected-target[data-control] {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="devices">
+    <main class="device-frame device-frame--green" aria-label="Karma splash parallax prototype inside green iPhone 5C mockup">
+      <div class="phone-mockup" aria-hidden="true">
+        <img src="assets/figma-raw-mockup-1.png" alt="">
+      </div>
+      <div class="phone-shell">
+        <section class="screen" data-side="left">
+      <div class="layer sky"><img src="assets/sky.svg" alt=""></div>
+      <div class="layer far-hills" aria-hidden="true">
+        <div class="far-hills-texture animatable" data-control="FarBackgroundHills texture"></div>
+      </div>
+
+      <div class="layer clouds" aria-hidden="true">
+        <img class="cloud to-left animatable" data-control="Cloud right to left" style="left:479.69px;top:24.12px;width:170.67px;height:66.53px" src="assets/clouds-right.svg" alt="">
+        <img class="cloud to-right animatable" data-control="Cloud left to right large" style="left:30.84px;top:0;width:240.73px;height:38.59px" src="assets/clouds-left.svg" alt="">
+        <img class="cloud to-right animatable" data-control="Cloud left to right small" style="left:0;top:19.84px;width:49.13px;height:19.11px" src="assets/clouds-small.svg" alt="">
+      </div>
+
+      <div class="layer background-hills">
+        <img class="background-slope animatable vertical-squash" data-control="BackgroundHills Slope1 squash" style="--squash-scale:.95" src="assets/background-slope1.svg" alt="">
+        <img class="background-triangles animatable" data-follow-control="BackgroundHills Slope1 squash" src="assets/background-triangles.svg" alt="">
+      </div>
+      <div class="layer midground-grass">
+        <img class="grass-part grass-2 animatable vertical-squash" data-control="MidgroundGrass Grass2 squash" style="--squash-scale:.92" src="assets/grass-2.svg" alt="">
+        <img class="grass-part grass-3 animatable vertical-squash" data-control="MidgroundGrass Grass3 squash" style="--squash-scale:.9" src="assets/grass-3.svg" alt="">
+        <div class="grass-dots-follow animatable" data-follow-control="MidgroundGrass Grass3 squash">
+        <span class="grass-dot" style="left:409.8px;top:84.53px;animation-delay:0s"></span>
+        <span class="grass-dot" style="left:440.72px;top:138.99px;animation-delay:.2s"></span>
+        <span class="grass-dot" style="left:484.32px;top:70.92px;animation-delay:.4s"></span>
+        <span class="grass-dot" style="left:509.07px;top:89.64px;animation-delay:.6s"></span>
+        <span class="grass-dot" style="left:201.87px;top:115.17px;animation-delay:.8s"></span>
+        <span class="grass-dot" style="left:184.8px;top:130.48px;animation-delay:1s"></span>
+        <span class="grass-dot" style="left:51.68px;top:105.8px;animation-delay:1.2s"></span>
+        <span class="grass-dot" style="left:608.91px;top:40.28px;animation-delay:1.4s"></span>
+        <span class="grass-dot" style="left:291.47px;top:117.72px;animation-delay:1.6s"></span>
+        <span class="grass-dot" style="left:385.33px;top:88.79px;animation-delay:1.8s"></span>
+        <span class="grass-dot" style="left:496.27px;top:58.15px;animation-delay:2s"></span>
+        <span class="grass-dot" style="left:412.64px;top:77.72px;animation-delay:2.2s"></span>
+        <span class="grass-dot" style="left:334.13px;top:134.74px;animation-delay:2.4s"></span>
+        <span class="grass-dot" style="left:112.27px;top:117.72px;animation-delay:2.6s"></span>
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="sun-wrap" data-control="SpinRaysGreen step rotation">
+          <img class="spin-rays-green" src="assets/spin-rays-green.svg" alt="">
+          <img class="sun-circle-green" src="assets/sun-circle-green.svg" alt="">
+        </div>
+        <div class="score">
+          <span class="score-value animatable" data-control="Score flip" id="scoreValue">
+            <span class="score-digit score-hundreds"></span>
+            <span class="score-digit score-tens">9</span>
+            <span class="score-ones-group">
+              <span class="score-ones">6</span>
+            </span>
+          </span>
+        </div>
+        <img class="horse animatable" data-control="Horse icon pulse" src="assets/horse.svg" alt="">
+        <div class="rays animatable" data-control="Lens flare group">
+          <img class="ray" style="--flare-x:56px;--flare-y:74px;width:32px;height:32px" src="assets/rays-01.svg" alt="">
+          <img class="ray" style="--flare-x:86px;--flare-y:114px;width:53px;height:53px" src="assets/rays-02.svg" alt="">
+          <img class="ray" style="--flare-x:116px;--flare-y:154px;width:42px;height:42px" src="assets/rays-03.svg" alt="">
+        </div>
+        <div class="copy">
+          <h1>Your activity shapes your Karma.</h1>
+          <ul>
+            <li>Post</li>
+            <li>Reply</li>
+            <li>Like</li>
+            <li>Get liked</li>
+            <li>Get downvoted</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="layer foreground-bushes">
+        <img class="bush-base" src="assets/bush-base.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 15 breathe" style="left:29.01px;top:62.16px;width:49.49px;height:49.35px;animation-delay:0s" src="assets/bush-shape-15.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 01 rotate" style="left:-27px;top:31px;width:83px;height:84px;animation-delay:.2s" src="assets/bush-ball-01.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 14 breathe" style="left:174.93px;top:82.58px;width:47.79px;height:47.65px;animation-delay:.4s" src="assets/bush-shape-14.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 02 rotate" style="left:203px;top:73px;width:75px;height:75px;animation-delay:.6s" src="assets/bush-ball-02.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 03 rotate" style="left:265px;top:83px;width:38px;height:37px;animation-delay:.8s" src="assets/bush-ball-03.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 04 rotate" style="left:284px;top:81px;width:31px;height:31px;animation-delay:1s" src="assets/bush-ball-04.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 13 breathe" style="left:304.64px;top:72.37px;width:56.32px;height:56.16px;animation-delay:1.2s" src="assets/bush-shape-13.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 12 breathe" style="left:321.51px;top:54.73px;width:55px;height:54px;animation-delay:1.4s" src="assets/bush-shape-12.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 05 rotate" style="left:351px;top:57px;width:56px;height:56px;animation-delay:1.6s" src="assets/bush-ball-05.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 06 rotate" style="left:302px;top:69px;width:62px;height:62px;animation-delay:1.8s" src="assets/bush-ball-06.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 11 breathe" style="left:415.57px;top:68.12px;width:102.4px;height:102.11px;animation-delay:2s" src="assets/bush-shape-11.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 10 breathe" style="left:300.37px;top:114.92px;width:59.73px;height:59.57px;animation-delay:2.2s" src="assets/bush-shape-10.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 07 rotate" style="left:345px;top:67px;width:134px;height:134px;animation-delay:2.4s" src="assets/bush-ball-07.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 09 breathe" style="left:509.44px;top:28.97px;width:52.91px;height:52.76px;animation-delay:2.6s" src="assets/bush-shape-09.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 08 breathe" style="left:541.87px;top:30.68px;width:34.13px;height:34.04px;animation-delay:2.8s" src="assets/bush-shape-08.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 07 breathe" style="left:610.99px;top:.04px;width:54.61px;height:54.46px;animation-delay:3s" src="assets/bush-shape-07.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 06 breathe" style="left:353.28px;top:116.62px;width:174.08px;height:173.59px;animation-delay:3.2s" src="assets/bush-shape-06.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 08 rotate" style="left:457px;top:48px;width:108px;height:108px;animation-delay:3.4s" src="assets/bush-ball-08.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 05 breathe" style="left:458px;top:127px;width:231px;height:231px;animation-delay:3.6s" src="assets/bush-shape-05.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 04 breathe" style="left:549.55px;top:18.76px;width:102.4px;height:102.11px;animation-delay:3.8s" src="assets/bush-shape-04.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 09 rotate" style="left:55px;top:53px;width:64px;height:64px;animation-delay:4s" src="assets/bush-ball-09.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 03 breathe" style="left:95.57px;top:50.25px;width:42.67px;height:42.55px;animation-delay:4.2s" src="assets/bush-shape-03.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 10 rotate" style="left:106px;top:66px;width:88px;height:86px;animation-delay:4.4s" src="assets/bush-ball-10.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 02 breathe" style="left:125px;top:113px;width:96.43px;height:96.16px;animation-delay:4.6s" src="assets/bush-shape-02.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 01 breathe" style="left:-18px;top:83px;width:158.72px;height:158.27px;animation-delay:4.8s" src="assets/bush-shape-01.svg" alt="">
+      </div>
+      </section>
+    </div>
+  </main>
+    <main class="device-frame device-frame--yellow" aria-label="Yellow iPhone 5C mockup placeholder">
+      <div class="phone-mockup phone-mockup--yellow" aria-hidden="true">
+        <img src="assets/figma-raw-yellow-mockup-1.png" alt="">
+      </div>
+      <div class="phone-shell phone-shell--yellow">
+        <section class="screen" aria-label="Yellow phone prototype placeholder"></section>
+      </div>
+    </main>
+    </div>
+    <aside class="compiler" aria-label="Animation compiler controls">
+      <div class="compiler-header">
+        <div>
+          <div class="compiler-label">Green phone</div>
+          <h2>Animation Compiler</h2>
+        </div>
+        <button type="button" id="toggleCompiler">Minimize</button>
+      </div>
+      <div class="compiler-body">
+        <p>Each moving layer compiles to CSS variables: rate, direction, and rhythm. Changes apply live.</p>
+        <div class="compiler-actions">
+          <button type="button" id="resetControls">Reset</button>
+          <button type="button" id="pauseControls">Pause all</button>
+          <button type="button" id="saveAllControls">Save all</button>
+          <button type="button" id="saveClouds">Save clouds</button>
+        </div>
+        <input class="compiler-search" id="controlSearch" type="search" placeholder="Search elements" aria-label="Search animation controls">
+        <div id="controlList"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const scoreEl = document.getElementById('scoreValue');
+    const scoreBox = document.querySelector('.score');
+    const scoreHundreds = scoreEl.querySelector('.score-hundreds');
+    const scoreTens = scoreEl.querySelector('.score-tens');
+    const scoreOnesGroup = scoreEl.querySelector('.score-ones-group');
+    const scoreOnes = scoreEl.querySelector('.score-ones');
+    const spinRays = document.querySelector('.spin-rays-green');
+    const screen = document.querySelector('.screen');
+    const activityItems = [...document.querySelectorAll('.copy li')];
+    let score = 96;
+    let spinRayTick = 0;
+    let scoreCycleStep = 0;
+
+    function renderScore(value, animateOnes = false, direction = 1) {
+      const digits = String(value);
+      scoreEl.style.setProperty('--score-digits', Math.min(digits.length, 3));
+      scoreHundreds.textContent = digits.length > 2 ? digits.slice(0, -2) : '';
+      scoreTens.textContent = digits.length > 1 ? digits.slice(-2, -1) : '';
+      scoreOnes.textContent = digits.slice(-1);
+      if (!animateOnes) return;
+      scoreOnesGroup.style.setProperty('--digit-dir-y', direction < 0 ? '-1' : '1');
+      scoreOnesGroup.classList.remove('is-animating');
+      void scoreOnesGroup.offsetWidth;
+      scoreOnesGroup.classList.add('is-animating');
+    }
+
+    function rotateSpinRays(delta) {
+      spinRayTick += delta;
+      spinRays.style.setProperty('--spin-rays-angle', `${spinRayTick * 45}deg`);
+    }
+
+    function markActivityItem(index) {
+      activityItems.forEach((item, i) => {
+        item.classList.toggle('is-active', i === index);
+      });
+    }
+
+    function advanceScoreCycle() {
+      const step = scoreCycleStep % activityItems.length;
+      const delta = step === activityItems.length - 1 ? -1 : 1;
+      const next = score + delta;
+      markActivityItem(step);
+      rotateSpinRays(delta);
+      score = next;
+      renderScore(score, true, delta);
+      scoreCycleStep += 1;
+    }
+
+    renderScore(score);
+    setInterval(advanceScoreCycle, 2000);
+
+    setInterval(() => {
+      screen.dataset.side = screen.dataset.side === 'left' ? 'right' : 'left';
+    }, 8000);
+
+    const easeMap = [
+      'linear',
+      'cubic-bezier(.4, 0, .2, 1)',
+      'ease-in-out',
+      'cubic-bezier(.16, 1, .3, 1)',
+      'steps(2, jump-none)'
+    ];
+
+    const controlList = document.getElementById('controlList');
+    const controlSearch = document.getElementById('controlSearch');
+    const phoneShell = document.querySelector('.phone-shell');
+    const controlled = [...document.querySelectorAll('[data-control]')];
+    const cards = [];
+    const controlsStorageKey = 'karma-animation-settings';
+    const cloudStorageKey = 'karma-cloud-settings';
+    let paused = false;
+    let selectedCard = null;
+    let selectedTarget = null;
+
+    function matrixTranslateX(target) {
+      const transform = getComputedStyle(target).transform;
+      if (!transform || transform === 'none') return 0;
+      const matrix = new DOMMatrixReadOnly(transform);
+      return matrix.m41;
+    }
+
+    function cloudScreenPosition(target) {
+      const shell = document.querySelector('.phone-shell').getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: rect.left - shell.left,
+        y: rect.top - shell.top,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+
+    function scoreScreenPosition() {
+      const shell = document.querySelector('.phone-shell').getBoundingClientRect();
+      const rect = scoreBox.getBoundingClientRect();
+      return {
+        x: rect.left - shell.left,
+        y: rect.top - shell.top
+      };
+    }
+
+    function syncCloudPositionControls() {
+      controlled.forEach((target, i) => {
+        if (!target.classList.contains('cloud')) return;
+        const pos = cloudScreenPosition(target);
+        const xInput = document.querySelector(`input[data-index="${i}"][data-kind="x"]`);
+        const yInput = document.querySelector(`input[data-index="${i}"][data-kind="y"]`);
+        if (xInput && document.activeElement !== xInput) {
+          xInput.value = Math.round(pos.x);
+          xInput.parentElement.querySelector('output').textContent = Math.round(pos.x);
+        }
+        if (yInput && document.activeElement !== yInput) {
+          yInput.value = Math.round(pos.y);
+          yInput.parentElement.querySelector('output').textContent = Math.round(pos.y);
+        }
+      });
+      requestAnimationFrame(syncCloudPositionControls);
+    }
+
+    function setCloudPath(target) {
+      const clouds = document.querySelector('.clouds');
+      const containerX = parseFloat(getComputedStyle(clouds).left) || 0;
+      const left = parseFloat(target.style.left) || 0;
+      const width = parseFloat(target.style.width) || target.getBoundingClientRect().width;
+      const startX = target.classList.contains('to-left') ? 640 : width * -1;
+      const endX = target.classList.contains('to-left') ? width * -1 : 640;
+      target.style.setProperty('--cloud-start', `${startX - containerX - left}px`);
+      target.style.setProperty('--cloud-end', `${endX - containerX - left}px`);
+    }
+
+    function cloudSettings() {
+      return [...document.querySelectorAll('.cloud')].map((cloud) => ({
+        label: cloud.dataset.control,
+        left: cloud.style.left,
+        top: cloud.style.top,
+        speed: cloud.style.getPropertyValue('--speed') || '1',
+        direction: cloud.style.getPropertyValue('--direction') || 'normal',
+        ease: cloud.style.getPropertyValue('--ease') || 'ease-in-out'
+      }));
+    }
+
+    function saveCloudSettings() {
+      localStorage.setItem(cloudStorageKey, JSON.stringify(cloudSettings()));
+    }
+
+    function allControlSettings() {
+      return controlled.map((target, index) => {
+        const settings = { label: target.dataset.control };
+        document.querySelectorAll(`input[data-index="${index}"][data-kind]`).forEach((input) => {
+          settings[input.dataset.kind] = input.value;
+        });
+        return settings;
+      });
+    }
+
+    function saveAllSettings() {
+      commitCurrentCloudPositions();
+      saveCloudSettings();
+      localStorage.setItem(controlsStorageKey, JSON.stringify(allControlSettings()));
+    }
+
+    function restoreAllSettings() {
+      const saved = localStorage.getItem(controlsStorageKey);
+      if (!saved) return;
+      try {
+        JSON.parse(saved).forEach((setting) => {
+          const index = controlled.findIndex((target) => target.dataset.control === setting.label);
+          if (index < 0) return;
+          Object.entries(setting).forEach(([kind, value]) => {
+            if (kind === 'label') return;
+            const input = document.querySelector(`input[data-index="${index}"][data-kind="${kind}"]`);
+            if (!input) return;
+            input.value = value;
+            applyControl(input);
+          });
+        });
+      } catch {
+        localStorage.removeItem(controlsStorageKey);
+      }
+    }
+
+    function applyRequestedDefaults() {
+      controlled.forEach((target, index) => {
+        const speedInput = document.querySelector(`input[data-index="${index}"][data-kind="speed"]`);
+        const rhythmInput = document.querySelector(`input[data-index="${index}"][data-kind="rhythm"]`);
+        if (target.classList.contains('bush-item') && speedInput) {
+          speedInput.value = 3;
+          applyControl(speedInput);
+        }
+        if (target.dataset.control === 'FarBackgroundHills texture') {
+          if (speedInput) {
+            speedInput.value = 3;
+            applyControl(speedInput);
+          }
+          if (rhythmInput) {
+            rhythmInput.value = 0;
+            applyControl(rhythmInput);
+          }
+        }
+      });
+      localStorage.setItem(controlsStorageKey, JSON.stringify(allControlSettings()));
+    }
+
+    function commitCurrentCloudPositions() {
+      const clouds = document.querySelector('.clouds');
+      const containerX = parseFloat(getComputedStyle(clouds).left) || 0;
+      const containerY = parseFloat(getComputedStyle(clouds).top) || 0;
+      document.querySelectorAll('.cloud').forEach((cloud) => {
+        const pos = cloudScreenPosition(cloud);
+        cloud.style.left = `${pos.x - containerX - matrixTranslateX(cloud)}px`;
+        cloud.style.top = `${pos.y - containerY}px`;
+      });
+    }
+
+    function restoreCloudSettings() {
+      const saved = localStorage.getItem(cloudStorageKey);
+      if (!saved) return;
+      try {
+        JSON.parse(saved).forEach((setting) => {
+          const cloud = [...document.querySelectorAll('.cloud')].find((item) => item.dataset.control === setting.label);
+          if (!cloud) return;
+          if (setting.left) cloud.style.left = setting.left;
+          if (setting.top) cloud.style.top = setting.top;
+          cloud.style.setProperty('--speed', setting.speed || '1');
+          cloud.style.setProperty('--direction', setting.direction || 'normal');
+          cloud.style.setProperty('--ease', setting.ease || 'ease-in-out');
+        });
+      } catch {
+        localStorage.removeItem(cloudStorageKey);
+      }
+    }
+
+    function controlCard(target, i) {
+      const label = target.dataset.control;
+      const id = `ctrl-${i}`;
+      const card = document.createElement('section');
+      const isCloud = target.classList.contains('cloud');
+      const isScore = target === scoreEl;
+      const pos = isCloud ? cloudScreenPosition(target) : { x: 0, y: 0, width: 0, height: 0 };
+      const scorePos = isScore ? scoreScreenPosition() : { x: 0, y: 0 };
+      card.className = 'control-card';
+      card.dataset.label = label.toLowerCase();
+      card.dataset.index = i;
+      card.innerHTML = `
+        <div class="control-title">
+          <strong>${label}</strong>
+          <button type="button" data-select="${i}">Select</button>
+        </div>
+        <label class="control-row" for="${id}-speed">
+          <span>Rate</span>
+          <input id="${id}-speed" data-kind="speed" data-index="${i}" type="range" min="0" max="3" step="0.05" value="1">
+          <output>1.00</output>
+        </label>
+        <label class="control-row" for="${id}-direction">
+          <span>Direction</span>
+          <input id="${id}-direction" data-kind="direction" data-index="${i}" type="range" min="-1" max="1" step="1" value="1">
+          <output>→</output>
+        </label>
+        <label class="control-row" for="${id}-rhythm">
+          <span>Rhythm</span>
+          <input id="${id}-rhythm" data-kind="rhythm" data-index="${i}" type="range" min="0" max="4" step="1" value="2">
+          <output>ease</output>
+        </label>
+        ${isCloud ? `
+        <label class="control-row" for="${id}-x">
+          <span>X</span>
+          <input id="${id}-x" data-kind="x" data-index="${i}" type="range" min="${Math.round((pos.width + 120) * -1)}" max="760" step="1" value="${Math.round(pos.x)}">
+          <output>${Math.round(pos.x)}</output>
+        </label>
+        <label class="control-row" for="${id}-y">
+          <span>Y</span>
+          <input id="${id}-y" data-kind="y" data-index="${i}" type="range" min="${Math.round(pos.height * -1)}" max="1136" step="1" value="${Math.round(pos.y)}">
+          <output>${Math.round(pos.y)}</output>
+        </label>
+        ` : ''}
+        ${isScore ? `
+        <label class="control-row" for="${id}-score-font-size">
+          <span>Font size</span>
+          <input id="${id}-score-font-size" data-kind="scoreFontSize" data-index="${i}" data-default="72" type="number" min="10" max="160" step="1" value="72">
+          <output>px</output>
+        </label>
+        <label class="control-row" for="${id}-score-font-weight">
+          <span>Weight</span>
+          <input id="${id}-score-font-weight" data-kind="scoreFontWeight" data-index="${i}" data-default="400" type="number" min="100" max="900" step="50" value="400">
+          <output></output>
+        </label>
+        <label class="control-row" for="${id}-score-x">
+          <span>X</span>
+          <input id="${id}-score-x" data-kind="scoreX" data-index="${i}" data-default="${Math.round(scorePos.x)}" type="number" min="-200" max="640" step="1" value="${Math.round(scorePos.x)}">
+          <output>px</output>
+        </label>
+        <label class="control-row" for="${id}-score-y">
+          <span>Y</span>
+          <input id="${id}-score-y" data-kind="scoreY" data-index="${i}" data-default="${Math.round(scorePos.y)}" type="number" min="-200" max="1136" step="1" value="${Math.round(scorePos.y)}">
+          <output>px</output>
+        </label>
+        <label class="control-row" for="${id}-score-letter-space">
+          <span>Letter</span>
+          <input id="${id}-score-letter-space" data-kind="scoreLetterSpace" data-index="${i}" data-default="0" type="number" min="-20" max="40" step="0.5" value="0">
+          <output>px</output>
+        </label>
+        <label class="control-row" for="${id}-score-line-height">
+          <span>Line height</span>
+          <input id="${id}-score-line-height" data-kind="scoreLineHeight" data-index="${i}" data-default="1" type="number" min="0.5" max="2" step="0.01" value="1">
+          <output></output>
+        </label>
+        ` : ''}
+      `;
+      return card;
+    }
+
+    function selectTarget(index) {
+      const target = controlled[Number(index)];
+      const card = cards[Number(index)];
+      if (!target || !card) return;
+      selectedTarget?.classList.remove('selected-target');
+      selectedCard?.classList.remove('is-active');
+      selectedTarget = target;
+      selectedCard = card;
+      selectedTarget.classList.add('selected-target');
+      selectedCard.classList.add('is-active');
+      selectedCard.scrollIntoView({ block: 'center' });
+    }
+
+    function filterControls() {
+      const query = controlSearch.value.trim().toLowerCase();
+      cards.forEach((card) => {
+        card.classList.toggle('is-hidden', query && !card.dataset.label.includes(query));
+      });
+    }
+
+    function applyControl(input) {
+      const target = controlled[Number(input.dataset.index)];
+      const output = input.parentElement.querySelector('output');
+      if (input.dataset.kind === 'speed') {
+        target.style.setProperty('--speed', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'direction') {
+        const reverse = Number(input.value) < 0;
+        target.style.setProperty('--direction', reverse ? 'reverse' : 'normal');
+        output.textContent = reverse ? '←' : '→';
+      }
+      if (input.dataset.kind === 'rhythm') {
+        const value = Number(input.value);
+        target.style.setProperty('--ease', easeMap[value]);
+        output.textContent = ['linear', 'soft', 'ease', 'spring', 'step'][value];
+      }
+      if (input.dataset.kind === 'x') {
+        const clouds = document.querySelector('.clouds');
+        const desired = Number(input.value);
+        const containerX = parseFloat(clouds.style.left || getComputedStyle(clouds).left) || 0;
+        target.style.left = `${desired - containerX - matrixTranslateX(target)}px`;
+        setCloudPath(target);
+        output.textContent = Math.round(desired);
+      }
+      if (input.dataset.kind === 'y') {
+        const clouds = document.querySelector('.clouds');
+        const desired = Number(input.value);
+        const containerY = parseFloat(clouds.style.top || getComputedStyle(clouds).top) || 0;
+        target.style.top = `${desired - containerY}px`;
+        output.textContent = Math.round(desired);
+      }
+      if (input.dataset.kind === 'scoreFontSize') {
+        scoreBox.style.setProperty('--score-font-size', `${Number(input.value)}px`);
+      }
+      if (input.dataset.kind === 'scoreFontWeight') {
+        scoreBox.style.setProperty('--score-font-weight', Number(input.value));
+      }
+      if (input.dataset.kind === 'scoreX') {
+        const infoX = parseFloat(getComputedStyle(document.querySelector('.info')).left) || 0;
+        scoreBox.style.left = `${Number(input.value) - infoX}px`;
+      }
+      if (input.dataset.kind === 'scoreY') {
+        const infoY = parseFloat(getComputedStyle(document.querySelector('.info')).top) || 0;
+        scoreBox.style.top = `${Number(input.value) - infoY}px`;
+      }
+      if (input.dataset.kind === 'scoreLetterSpace') {
+        scoreBox.style.setProperty('--score-letter-space', `${Number(input.value)}px`);
+      }
+      if (input.dataset.kind === 'scoreLineHeight') {
+        scoreBox.style.setProperty('--score-line-height', Number(input.value));
+      }
+      if (target.classList.contains('cloud')) saveCloudSettings();
+      syncFollowers(target);
+    }
+
+    function syncFollowers(target) {
+      document.querySelectorAll(`[data-follow-control="${target.dataset.control}"]`).forEach((follower) => {
+        follower.style.setProperty('--speed', target.style.getPropertyValue('--speed') || '1');
+        follower.style.setProperty('--direction', target.style.getPropertyValue('--direction') || 'normal');
+        follower.style.setProperty('--ease', target.style.getPropertyValue('--ease') || 'ease-in-out');
+      });
+    }
+
+    restoreCloudSettings();
+
+    controlled.forEach((target, i) => {
+      target.closest('.layer, .info')?.classList.add('clickable-region');
+      if (target.classList.contains('cloud')) {
+        setCloudPath(target);
+        const pos = cloudScreenPosition(target);
+        target.dataset.initialX = Math.round(pos.x);
+        target.dataset.initialY = Math.round(pos.y);
+      }
+      const card = controlCard(target, i);
+      cards.push(card);
+      controlList.appendChild(card);
+    });
+
+    document.querySelectorAll('.compiler input[data-kind]').forEach(applyControl);
+    restoreAllSettings();
+    applyRequestedDefaults();
+
+    controlList.addEventListener('input', (event) => {
+      if (event.target.matches('input[data-kind]')) applyControl(event.target);
+    });
+
+    controlList.addEventListener('click', (event) => {
+      const selectButton = event.target.closest('[data-select]');
+      const card = event.target.closest('.control-card');
+      if (selectButton) {
+        selectTarget(selectButton.dataset.select);
+        return;
+      }
+      if (card) selectTarget(card.dataset.index);
+    });
+
+    phoneShell.addEventListener('click', (event) => {
+      const target = event.target.closest('[data-control]')
+        || document.elementsFromPoint(event.clientX, event.clientY)
+          .map((element) => element.closest('[data-control]'))
+          .find((element) => element && phoneShell.contains(element));
+      if (!target || !phoneShell.contains(target)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const index = controlled.indexOf(target);
+      if (index < 0) return;
+      if (controlSearch.value) {
+        controlSearch.value = '';
+        filterControls();
+      }
+      selectTarget(index);
+    });
+
+    controlSearch.addEventListener('input', filterControls);
+
+    document.getElementById('resetControls').addEventListener('click', () => {
+      document.querySelectorAll('.compiler input').forEach((input) => {
+        if (!input.dataset.kind) return;
+        const target = controlled[Number(input.dataset.index)];
+        if (input.dataset.kind === 'rhythm') input.value = 2;
+        if (input.dataset.kind === 'speed' || input.dataset.kind === 'direction') input.value = 1;
+        if (input.dataset.kind === 'x') input.value = target.dataset.initialX;
+        if (input.dataset.kind === 'y') input.value = target.dataset.initialY;
+        if (input.type === 'number' && input.dataset.default) input.value = input.dataset.default;
+        applyControl(input);
+      });
+      saveAllSettings();
+    });
+
+    document.getElementById('pauseControls').addEventListener('click', (event) => {
+      paused = !paused;
+      document.querySelectorAll('.animatable, .score-value, .grass-dot').forEach((el) => {
+        el.style.animationPlayState = paused ? 'paused' : 'running';
+      });
+      event.currentTarget.textContent = paused ? 'Resume all' : 'Pause all';
+    });
+
+    document.getElementById('saveClouds').addEventListener('click', (event) => {
+      commitCurrentCloudPositions();
+      saveCloudSettings();
+      event.currentTarget.textContent = 'Saved';
+      setTimeout(() => {
+        event.currentTarget.textContent = 'Save clouds';
+      }, 900);
+    });
+
+    document.getElementById('saveAllControls').addEventListener('click', (event) => {
+      saveAllSettings();
+      event.currentTarget.textContent = 'Saved';
+      setTimeout(() => {
+        event.currentTarget.textContent = 'Save all';
+      }, 900);
+    });
+
+    document.getElementById('toggleCompiler').addEventListener('click', (event) => {
+      const compiler = event.currentTarget.closest('.compiler');
+      const minimized = compiler.classList.toggle('is-minimized');
+      event.currentTarget.textContent = minimized ? 'Expand' : 'Minimize';
+    });
+
+    requestAnimationFrame(syncCloudPositionControls);
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<svg width="97" height="97" viewBox="0 0 97 97" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Karma splash green">
+<g id="ForegroundBushes">
+<path id="BushShape-02" fill-rule="evenodd" clip-rule="evenodd" d="M48.2133 96.1558C74.8408 96.1558 96.4267 74.6306 96.4267 48.0779C96.4267 21.5252 74.8408 0 48.2133 0C21.5858 0 0 21.5252 0 48.0779C0 74.6306 21.5858 96.1558 48.2133 96.1558Z" fill="url(#paint0_linear_0_1)"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="48.2133" y1="0" x2="48.2133" y2="96.1558" gradientUnits="userSpaceOnUse">
+<stop stop-color="#147240"/>
+<stop offset="1" stop-color="#0C7F42"/>
+</linearGradient>
+</defs>
+</svg>

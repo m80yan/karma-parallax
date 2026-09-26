@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="263" height="263" viewBox="0 0 263 263" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="SpinRaysGreen">
+<path id="Line" d="M131.5 1V21" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_2" d="M131.5 242V262" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_3" d="M262 131.5H242" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_4" d="M21 131.5H1" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_5" d="M223.777 223.777L209.635 209.635" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_6" d="M53.3643 53.3652L39.2221 39.2231" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_7" d="M39.2227 223.777L53.3648 209.635" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line_8" d="M209.636 53.3652L223.778 39.2231" stroke="#0B743F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

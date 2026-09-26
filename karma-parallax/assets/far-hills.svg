@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="640" height="428.498" viewBox="0 0 640 428.498" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<path id="FarBackgroundHills" d="M0 45.6659C0 45.6659 196.635 55.0641 294.952 44.5412C409.968 32.2312 640 0 640 0V428.498H0V45.6659Z" fill="url(#pattern0_0_4)"/>
+<defs>
+<pattern id="pattern0_0_4" patternUnits="userSpaceOnUse" patternTransform="matrix(32 0 0 32 0 0)" preserveAspectRatio="none" viewBox="0 0 32 32" width="1" height="1">
+<g id="pattern0_0_4_inner">
+<g id="Frame 48090471" clip-path="url(#clip0_0_4)">
+<path id="Rectangle 11" d="M33 7H41L7 41V33L33 7Z" fill="#9DCD67"/>
+<path id="Rectangle 13" d="M24 0H32L-2 34V26L24 0Z" fill="#9DCD67"/>
+<path id="Rectangle 14" d="M8 0H16L-18 34V26L8 0Z" fill="#9DCD67"/>
+<path id="Rectangle 12" d="M39 17H47L13 51V43L39 17Z" fill="#9DCD67"/>
+</g>
+</g>
+</pattern><clipPath id="clip0_0_4">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
+</svg>

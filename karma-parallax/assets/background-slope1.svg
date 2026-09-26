@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="640" height="468.015" viewBox="0 0 640 468.015" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="Slope1" d="M338.053 139.557C274.983 119.545 192.221 56.3187 117.577 26.7788C56.5762 3.03313 0 0 0 0V468.015H640V146.958C640 146.958 526.563 199.372 338.053 139.557Z" fill="url(#paint0_linear_0_4)"/>
+<defs>
+<linearGradient id="paint0_linear_0_4" x1="22" y1="-92.1348" x2="22" y2="131.365" gradientUnits="userSpaceOnUse">
+<stop stop-color="#7FB341"/>
+<stop offset="1" stop-color="#95C753"/>
+</linearGradient>
+</defs>
+</svg>

@@ -1,0 +1,20 @@
+<svg width="57" height="85" viewBox="0 0 57 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Karma splash green">
+<g clip-path="url(#clip0_0_1)">
+<g id="ForegroundBushes">
+<g id="BushBall-01">
+<circle id="Ellipse 1" cx="14.5063" cy="42.2212" r="40.5" fill="url(#paint0_linear_0_1)" stroke="#0A733E" stroke-width="3" stroke-linejoin="round" stroke-dasharray="4 4"/>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="14.5063" y1="3.22119" x2="14.5063" y2="81.2212" gradientUnits="userSpaceOnUse">
+<stop stop-color="#147240"/>
+<stop offset="1" stop-color="#167B43"/>
+</linearGradient>
+<clipPath id="clip0_0_1">
+<rect y="-888" width="640" height="1136" fill="white"/>
+</clipPath>
+</defs>
+</svg>
