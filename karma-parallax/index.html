@@ -13,6 +13,14 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: "PingFangPacked";
+      src: url("assets/fonts/PingFangSC-subset.woff2") format("woff2");
+      font-weight: 400 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
       --prototype-width: 640px;
       --prototype-height: 1136px;
@@ -37,8 +45,8 @@
       --parallax-mid: 5px;
       --parallax-near: 10px;
       --push-scale: 1.05;
-      --font-display: "PingFang SC", "PingFangSC", "Helvetica Neue", Arial, sans-serif;
-      --font-score: Inter, "Helvetica Neue", Arial, sans-serif;
+      --font-display: "PingFangPacked", "PingFang SC", "PingFangSC", "Helvetica Neue", Arial, sans-serif;
+      --font-score: "PingFangPacked", "PingFang SC", "PingFangSC", "Helvetica Neue", Arial, sans-serif;
       --score-font-size: 72px;
       --score-font-weight: 400;
       --score-line-height: 1;
@@ -154,6 +162,57 @@
       inset: 0;
       overflow: hidden;
       background: var(--screen-bg);
+    }
+
+    .status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 640px;
+      height: 39px;
+      z-index: 30;
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 24px;
+      line-height: normal;
+      font-weight: 400;
+      letter-spacing: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .status-bar img,
+    .status-bar span {
+      position: absolute;
+      display: block;
+    }
+
+    .status-signal-full-1 { left: 13px; top: 17px; width: 11px; height: 11px; }
+    .status-signal-full-2 { left: 27px; top: 17px; width: 11px; height: 11px; }
+    .status-signal-full-3 { left: 41px; top: 17px; width: 11px; height: 11px; }
+    .status-signal-full-4 { left: 55px; top: 17px; width: 11px; height: 11px; }
+    .status-signal-empty { left: 69px; top: 17px; width: 11px; height: 11px; }
+    .status-text {
+      height: 34px;
+      display: flex !important;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .status-carrier { left: 89px; top: 5px; width: 65px; }
+    .status-wifi { left: 155px; top: 11px; width: 24px; height: 24px; }
+    .status-location { left: 478px; top: 12px; width: 20px; height: 20px; }
+    .status-percent { left: 510px; top: 5px; width: 62px; }
+    .status-battery { left: 580px; top: 11px; width: 49px; height: 24px; }
+
+    .status-time {
+      position: absolute;
+      top: 5px;
+      left: 270.58px;
+      width: 97px;
+      font-weight: 500;
+      justify-content: center;
+      white-space: nowrap;
     }
 
     .layer {
@@ -404,6 +463,12 @@
       top: 130.5px;
       width: 0;
       height: 0;
+      --flare-scale: 2;
+      --flare-distance: 1;
+      --flare-rotate: 18deg;
+      --flare-opacity-1: 0.82;
+      --flare-opacity-2: 0.82;
+      --flare-opacity-3: 0.82;
       --base-dur: var(--motion-rays);
       animation: flarePointerSweep var(--motion-rays) ease-in-out infinite;
       transform-origin: 0 0;
@@ -414,6 +479,7 @@
       display: block;
       left: var(--flare-x);
       top: var(--flare-y);
+      --flare-opacity: 0.82;
       transform: translate(-50%, -50%);
       transform-origin: center;
       animation-name: flarePointerItem;
@@ -588,34 +654,30 @@
     @keyframes flarePointerSweep {
       0%, 100% { transform: rotate(0deg); }
       34% { transform: rotate(0deg); }
-      68% { transform: rotate(-18deg); }
+      68% { transform: rotate(var(--flare-rotate)); }
     }
 
     @keyframes flarePointerItem {
       0%, 100% {
         opacity: 0.5;
         filter: blur(0);
-        transform: translate(-50%, -50%) translate(0, 0) rotate(-24deg) scaleY(1) rotate(24deg);
+        transform: translate(-50%, -50%) translate(0, 0) scale(1);
       }
       34% {
-        opacity: 0.82;
+        opacity: var(--flare-opacity);
         filter: blur(0.2px);
         transform:
           translate(-50%, -50%)
-          translate(calc(var(--flare-x) * 0.28), calc(var(--flare-y) * 0.28))
-          rotate(-24deg)
-          scaleY(1.58)
-          rotate(24deg);
+          translate(calc(var(--flare-x) * var(--flare-distance)), calc(var(--flare-y) * var(--flare-distance)))
+          scale(var(--flare-scale));
       }
       68% {
-        opacity: 0.7;
+        opacity: calc(var(--flare-opacity) * 0.85);
         filter: blur(0.15px);
         transform:
           translate(-50%, -50%)
-          translate(calc(var(--flare-x) * 0.28), calc(var(--flare-y) * 0.28))
-          rotate(-24deg)
-          scaleY(1.48)
-          rotate(24deg);
+          translate(calc(var(--flare-x) * var(--flare-distance)), calc(var(--flare-y) * var(--flare-distance)))
+          scale(var(--flare-scale));
       }
     }
 
@@ -834,6 +896,19 @@
       </div>
       <div class="phone-shell">
         <section class="screen" data-side="left">
+      <div class="status-bar" aria-label="Phone status bar">
+        <img class="status-signal-full-1" src="assets/statusbar/signal-full.svg" alt="">
+        <img class="status-signal-full-2" src="assets/statusbar/signal-full.svg" alt="">
+        <img class="status-signal-full-3" src="assets/statusbar/signal-full.svg" alt="">
+        <img class="status-signal-full-4" src="assets/statusbar/signal-full.svg" alt="">
+        <img class="status-signal-empty" src="assets/statusbar/signal-empty.svg" alt="">
+        <span class="status-text status-carrier">ERYU</span>
+        <img class="status-wifi" src="assets/statusbar/wifi.svg" alt="">
+        <span class="status-text status-time" id="statusTime">--:--</span>
+        <img class="status-location" src="assets/statusbar/location.svg" alt="">
+        <span class="status-text status-percent">100%</span>
+        <img class="status-battery" src="assets/statusbar/battery.svg" alt="">
+      </div>
       <div class="layer sky"><img src="assets/sky.svg" alt=""></div>
       <div class="layer far-hills" aria-hidden="true">
         <div class="far-hills-texture animatable" data-control="FarBackgroundHills texture"></div>
@@ -902,9 +977,9 @@
         </div>
         <img class="horse animatable" data-control="Horse icon pulse" src="assets/horse.svg" alt="">
         <div class="rays animatable" data-control="Lens flare group">
-          <img class="ray" style="--flare-x:50px;--flare-y:112.2px;width:32px;height:32px" src="assets/rays-01.svg" alt="">
-          <img class="ray" style="--flare-x:61px;--flare-y:133px;width:42px;height:42px" src="assets/rays-03.svg" alt="">
-          <img class="ray" style="--flare-x:94.5px;--flare-y:190.5px;width:53px;height:53px" src="assets/rays-02.svg" alt="">
+          <img class="ray" data-flare-index="1" style="--flare-x:50px;--flare-y:112.2px;--flare-opacity:var(--flare-opacity-1);width:32px;height:32px" src="assets/rays-01.svg" alt="">
+          <img class="ray" data-flare-index="2" style="--flare-x:61px;--flare-y:133px;--flare-opacity:var(--flare-opacity-2);width:42px;height:42px" src="assets/rays-03.svg" alt="">
+          <img class="ray" data-flare-index="3" style="--flare-x:94.5px;--flare-y:190.5px;--flare-opacity:var(--flare-opacity-3);width:53px;height:53px" src="assets/rays-02.svg" alt="">
         </div>
         <div class="copy">
           <h1>Your activity shapes your Karma.</h1>
@@ -989,10 +1064,22 @@
     const scoreOnes = scoreEl.querySelector('.score-ones');
     const spinRays = document.querySelector('.spin-rays-green');
     const screen = document.querySelector('.screen');
+    const statusTime = document.getElementById('statusTime');
     const activityItems = [...document.querySelectorAll('.copy li')];
     let score = 96;
     let spinRayTick = 0;
     let scoreCycleStep = 0;
+
+    function formatStatusTime(date) {
+      const suffix = date.getHours() >= 12 ? 'PM' : 'AM';
+      const hours = date.getHours() % 12 || 12;
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${hours}:${minutes}${suffix}`;
+    }
+
+    function updateStatusTime() {
+      statusTime.textContent = formatStatusTime(new Date());
+    }
 
     function renderScore(value, animateOnes = false, direction = 1) {
       const digits = String(value);
@@ -1029,6 +1116,8 @@
       scoreCycleStep += 1;
     }
 
+    updateStatusTime();
+    setInterval(updateStatusTime, 1000);
     renderScore(score);
     setInterval(advanceScoreCycle, 2000);
 
@@ -1228,6 +1317,7 @@
       const isCloud = target.classList.contains('cloud');
       const isScore = target === scoreEl;
       const isGroupScale = target.classList.contains('group-scale-control');
+      const isRays = target.classList.contains('rays');
       const groupScale = isGroupScale ? (target.style.getPropertyValue('--group-scale') || '1') : '1';
       const pos = isCloud ? cloudScreenPosition(target) : { x: 0, y: 0, width: 0, height: 0 };
       const scorePos = isScore ? scoreScreenPosition() : { x: 0, y: 0 };
@@ -1259,6 +1349,38 @@
           <span>Size</span>
           <input id="${id}-group-scale" data-kind="groupScale" data-index="${i}" type="range" min="0.5" max="3" step="0.05" value="${groupScale}">
           <output>${Number(groupScale).toFixed(2)}</output>
+        </label>
+        ` : ''}
+        ${isRays ? `
+        <label class="control-row" for="${id}-flare-scale">
+          <span>Flare scale</span>
+          <input id="${id}-flare-scale" data-kind="flareScale" data-index="${i}" type="range" min="0.5" max="2" step="0.05" value="2">
+          <output>2.00</output>
+        </label>
+        <label class="control-row" for="${id}-flare-distance">
+          <span>Distance</span>
+          <input id="${id}-flare-distance" data-kind="flareDistance" data-index="${i}" type="range" min="0" max="1" step="0.05" value="1">
+          <output>1.00</output>
+        </label>
+        <label class="control-row" for="${id}-flare-rotate">
+          <span>Rotate</span>
+          <input id="${id}-flare-rotate" data-kind="flareRotate" data-index="${i}" type="range" min="-60" max="60" step="1" value="18">
+          <output>18°</output>
+        </label>
+        <label class="control-row" for="${id}-flare-opacity-1">
+          <span>Opacity 1</span>
+          <input id="${id}-flare-opacity-1" data-kind="flareOpacity1" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.82">
+          <output>0.82</output>
+        </label>
+        <label class="control-row" for="${id}-flare-opacity-2">
+          <span>Opacity 2</span>
+          <input id="${id}-flare-opacity-2" data-kind="flareOpacity2" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.82">
+          <output>0.82</output>
+        </label>
+        <label class="control-row" for="${id}-flare-opacity-3">
+          <span>Opacity 3</span>
+          <input id="${id}-flare-opacity-3" data-kind="flareOpacity3" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.82">
+          <output>0.82</output>
         </label>
         ` : ''}
         ${isCloud ? `
@@ -1348,6 +1470,30 @@
       }
       if (input.dataset.kind === 'groupScale') {
         target.style.setProperty('--group-scale', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'flareScale') {
+        target.style.setProperty('--flare-scale', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'flareDistance') {
+        target.style.setProperty('--flare-distance', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'flareRotate') {
+        target.style.setProperty('--flare-rotate', `${Number(input.value)}deg`);
+        output.textContent = `${Number(input.value)}°`;
+      }
+      if (input.dataset.kind === 'flareOpacity1') {
+        target.style.setProperty('--flare-opacity-1', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'flareOpacity2') {
+        target.style.setProperty('--flare-opacity-2', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'flareOpacity3') {
+        target.style.setProperty('--flare-opacity-3', input.value);
         output.textContent = Number(input.value).toFixed(2);
       }
       if (input.dataset.kind === 'x') {
@@ -1459,6 +1605,10 @@
         if (input.dataset.kind === 'rhythm') input.value = 2;
         if (input.dataset.kind === 'speed' || input.dataset.kind === 'direction') input.value = 1;
         if (input.dataset.kind === 'groupScale') input.value = target.dataset.initialGroupScale || 1;
+        if (input.dataset.kind === 'flareScale') input.value = 2;
+        if (input.dataset.kind === 'flareDistance') input.value = 1;
+        if (input.dataset.kind === 'flareRotate') input.value = 18;
+        if (input.dataset.kind === 'flareOpacity1' || input.dataset.kind === 'flareOpacity2' || input.dataset.kind === 'flareOpacity3') input.value = 0.82;
         if (input.dataset.kind === 'x') input.value = target.dataset.initialX;
         if (input.dataset.kind === 'y') input.value = target.dataset.initialY;
         if (input.type === 'number' && input.dataset.default) input.value = input.dataset.default;
