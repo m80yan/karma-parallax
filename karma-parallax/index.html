@@ -46,6 +46,10 @@
       --motion-breathe: 4.8s;
       --motion-clouds: 18s;
       --motion-score: 500ms;
+      --reel-dur: 1400ms;
+      --reel-spin-blur: 3px;
+      --reel-stagger: 90ms;
+      --reel-ease: cubic-bezier(0.16, 1, 0.3, 1);
       --motion-rays: 7s;
       --motion-sun: 12s;
       --cloud-edge-pad: 120px;
@@ -533,6 +537,62 @@
       animation: none;
     }
 
+    .score.is-resetting .score-value {
+      visibility: hidden;
+    }
+
+    .score-reel {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: baseline;
+      justify-content: center;
+      height: 100%;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+
+    .score.is-resetting .score-reel {
+      display: flex;
+    }
+
+    .score-reel-col {
+      position: relative;
+      width: var(--score-digit-width);
+      height: 1em;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+    }
+
+    .score-reel-col + .score-reel-col {
+      margin-left: var(--score-letter-space);
+    }
+
+    .score-reel-strip {
+      display: flex;
+      flex-direction: column;
+      transform: translateY(calc(var(--reel-from, 0) * -1em));
+      will-change: transform, filter;
+    }
+
+    .score-reel-col.is-spinning .score-reel-strip {
+      transition:
+        transform var(--reel-dur) var(--reel-ease) var(--reel-delay, 0ms),
+        filter var(--reel-dur) var(--reel-ease) var(--reel-delay, 0ms);
+      transform: translateY(calc(var(--reel-to, 0) * -1em));
+      filter: url(#scoreReelBlur);
+    }
+
+    .score-reel-digit {
+      height: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      text-align: center;
+    }
+
     .score-digit {
       display: inline-block;
       width: var(--score-digit-width);
@@ -563,6 +623,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .score-ones-group .score-ones { animation: none !important; }
+      .score-reel-strip { transition: none !important; filter: none !important; }
     }
 
     .horse {
@@ -897,6 +958,11 @@
   </style>
 </head>
 <body>
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute">
+    <filter id="scoreReelBlur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0 3" />
+    </filter>
+  </svg>
   <div class="stage">
     <div class="devices">
     <main class="device-frame device-frame--green" aria-label="Karma splash parallax prototype inside green iPhone 5C mockup">
@@ -983,6 +1049,7 @@
               <span class="score-ones">6</span>
             </span>
           </span>
+          <span class="score-reel" id="scoreReel" aria-hidden="true"></span>
         </div>
         <img class="horse animatable" data-control="Horse icon pulse" src="assets/horse.svg" alt="">
         <div class="rays animatable" data-control="Lens flare group">
@@ -1071,13 +1138,18 @@
     const scoreTens = scoreEl.querySelector('.score-tens');
     const scoreOnesGroup = scoreEl.querySelector('.score-ones-group');
     const scoreOnes = scoreEl.querySelector('.score-ones');
+    const scoreReel = document.getElementById('scoreReel');
     const spinRays = document.querySelector('.spin-rays-green');
+    const lensFlares = document.querySelector('.rays');
     const screen = document.querySelector('.screen');
     const statusTime = document.getElementById('statusTime');
     const activityItems = [...document.querySelectorAll('.copy li')];
-    let score = 96;
+    const scoreStart = 96;
+    const scoreMax = 160;
+    let score = scoreStart;
     let spinRayTick = 0;
     let scoreCycleStep = 0;
+    let scoreResetting = false;
 
     function formatStatusTime(date) {
       const suffix = date.getHours() >= 12 ? 'PM' : 'AM';
@@ -1103,6 +1175,58 @@
       scoreOnesGroup.classList.add('is-animating');
     }
 
+    function reelDigits(fromValue, toValue) {
+      const fromDigits = String(fromValue).padStart(3, '0');
+      const toDigits = String(toValue).padStart(3, '0');
+      scoreReel.innerHTML = '';
+      [...toDigits].forEach((digit, index) => {
+        const fromDigit = Number(fromDigits[index]);
+        const toDigit = Number(digit);
+        const spins = 2 + index;
+        const toIndex = spins * 10 + toDigit;
+        const col = document.createElement('span');
+        const strip = document.createElement('span');
+        col.className = 'score-reel-col';
+        strip.className = 'score-reel-strip';
+        col.style.setProperty('--reel-from', fromDigit);
+        col.style.setProperty('--reel-to', toIndex);
+        col.style.setProperty('--reel-delay', `${index * 90}ms`);
+        for (let i = 0; i <= toIndex; i += 1) {
+          const cell = document.createElement('span');
+          cell.className = 'score-reel-digit';
+          cell.textContent = i % 10;
+          strip.appendChild(cell);
+        }
+        col.appendChild(strip);
+        scoreReel.appendChild(col);
+        requestAnimationFrame(() => col.classList.add('is-spinning'));
+      });
+    }
+
+    function resetScoreWithReel(fromValue) {
+      scoreResetting = true;
+      scoreBox.classList.add('is-resetting');
+      setSolarResetState(true);
+      clearActivityItems();
+      reelDigits(fromValue, scoreStart);
+      const duration = 1400 + 2 * 90 + 80;
+      setTimeout(() => {
+        score = scoreStart;
+        scoreCycleStep = 0;
+        renderScore(score, false);
+        scoreBox.classList.remove('is-resetting');
+        scoreReel.innerHTML = '';
+        setSolarResetState(false);
+        scoreResetting = false;
+      }, duration);
+    }
+
+    function setSolarResetState(isResetting) {
+      spinRays.style.animationPlayState = isResetting ? 'paused' : '';
+      spinRays.style.transition = isResetting ? 'none' : '';
+      lensFlares.style.animationPlayState = isResetting ? 'paused' : '';
+    }
+
     function rotateSpinRays(delta) {
       spinRayTick += delta;
       spinRays.style.setProperty('--spin-rays-angle', `${spinRayTick * 45}deg`);
@@ -1114,10 +1238,19 @@
       });
     }
 
+    function clearActivityItems() {
+      activityItems.forEach((item) => item.classList.remove('is-active'));
+    }
+
     function advanceScoreCycle() {
+      if (scoreResetting) return;
       const step = scoreCycleStep % activityItems.length;
       const delta = step === activityItems.length - 1 ? -1 : 1;
       const next = score + delta;
+      if (next > scoreMax) {
+        resetScoreWithReel(next);
+        return;
+      }
       markActivityItem(step);
       rotateSpinRays(delta);
       score = next;
