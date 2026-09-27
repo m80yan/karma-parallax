@@ -16,7 +16,15 @@
     @font-face {
       font-family: "PingFangPacked";
       src: url("assets/fonts/PingFangSC-subset.woff2") format("woff2");
-      font-weight: 400 700;
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "PingFangPacked";
+      src: url("assets/fonts/PingFangSC-Semibold-subset.woff2") format("woff2");
+      font-weight: 600;
       font-style: normal;
       font-display: swap;
     }
@@ -463,13 +471,14 @@
       top: 130.5px;
       width: 0;
       height: 0;
-      --flare-scale: 2;
-      --flare-distance: 1;
-      --flare-rotate: 18deg;
-      --flare-opacity-1: 0.82;
+      --flare-scale: 1.35;
+      --flare-distance: 0;
+      --flare-rotate: 60deg;
+      --flare-opacity-1: 1;
       --flare-opacity-2: 0.82;
-      --flare-opacity-3: 0.82;
+      --flare-opacity-3: 0.62;
       --base-dur: var(--motion-rays);
+      --speed: 0.2;
       animation: flarePointerSweep var(--motion-rays) ease-in-out infinite;
       transform-origin: 0 0;
     }
@@ -1139,6 +1148,8 @@
     const controlled = [...document.querySelectorAll('[data-control]')];
     const cards = [];
     const controlsStorageKey = 'karma-animation-settings';
+    const controlsVersionKey = 'karma-animation-settings-version';
+    const controlsVersion = '2026-09-26-flare-defaults';
     const cloudStorageKey = 'karma-cloud-settings';
     let paused = false;
     let selectedCard = null;
@@ -1237,9 +1248,14 @@
       commitCurrentCloudPositions();
       saveCloudSettings();
       localStorage.setItem(controlsStorageKey, JSON.stringify(allControlSettings()));
+      localStorage.setItem(controlsVersionKey, controlsVersion);
     }
 
     function restoreAllSettings() {
+      if (localStorage.getItem(controlsVersionKey) !== controlsVersion) {
+        localStorage.removeItem(controlsStorageKey);
+        return;
+      }
       const saved = localStorage.getItem(controlsStorageKey);
       if (!saved) return;
       try {
@@ -1279,6 +1295,7 @@
         }
       });
       localStorage.setItem(controlsStorageKey, JSON.stringify(allControlSettings()));
+      localStorage.setItem(controlsVersionKey, controlsVersion);
     }
 
     function commitCurrentCloudPositions() {
@@ -1319,6 +1336,9 @@
       const isGroupScale = target.classList.contains('group-scale-control');
       const isRays = target.classList.contains('rays');
       const groupScale = isGroupScale ? (target.style.getPropertyValue('--group-scale') || '1') : '1';
+      const speedValue = isRays ? '0.2' : '1';
+      const directionValue = '1';
+      const rhythmValue = '2';
       const pos = isCloud ? cloudScreenPosition(target) : { x: 0, y: 0, width: 0, height: 0 };
       const scorePos = isScore ? scoreScreenPosition() : { x: 0, y: 0 };
       card.className = 'control-card';
@@ -1331,17 +1351,17 @@
         </div>
         <label class="control-row" for="${id}-speed">
           <span>Rate</span>
-          <input id="${id}-speed" data-kind="speed" data-index="${i}" type="range" min="0" max="3" step="0.05" value="1">
-          <output>1.00</output>
+          <input id="${id}-speed" data-kind="speed" data-index="${i}" type="range" min="0" max="3" step="0.05" value="${speedValue}">
+          <output>${Number(speedValue).toFixed(2)}</output>
         </label>
         <label class="control-row" for="${id}-direction">
           <span>Direction</span>
-          <input id="${id}-direction" data-kind="direction" data-index="${i}" type="range" min="-1" max="1" step="1" value="1">
+          <input id="${id}-direction" data-kind="direction" data-index="${i}" type="range" min="-1" max="1" step="1" value="${directionValue}">
           <output>→</output>
         </label>
         <label class="control-row" for="${id}-rhythm">
           <span>Rhythm</span>
-          <input id="${id}-rhythm" data-kind="rhythm" data-index="${i}" type="range" min="0" max="4" step="1" value="2">
+          <input id="${id}-rhythm" data-kind="rhythm" data-index="${i}" type="range" min="0" max="4" step="1" value="${rhythmValue}">
           <output>ease</output>
         </label>
         ${isGroupScale ? `
@@ -1354,23 +1374,23 @@
         ${isRays ? `
         <label class="control-row" for="${id}-flare-scale">
           <span>Flare scale</span>
-          <input id="${id}-flare-scale" data-kind="flareScale" data-index="${i}" type="range" min="0.5" max="2" step="0.05" value="2">
-          <output>2.00</output>
+          <input id="${id}-flare-scale" data-kind="flareScale" data-index="${i}" type="range" min="0.5" max="2" step="0.05" value="1.35">
+          <output>1.35</output>
         </label>
         <label class="control-row" for="${id}-flare-distance">
           <span>Distance</span>
-          <input id="${id}-flare-distance" data-kind="flareDistance" data-index="${i}" type="range" min="0" max="1" step="0.05" value="1">
-          <output>1.00</output>
+          <input id="${id}-flare-distance" data-kind="flareDistance" data-index="${i}" type="range" min="0" max="1" step="0.05" value="0">
+          <output>0.00</output>
         </label>
         <label class="control-row" for="${id}-flare-rotate">
           <span>Rotate</span>
-          <input id="${id}-flare-rotate" data-kind="flareRotate" data-index="${i}" type="range" min="-60" max="60" step="1" value="18">
-          <output>18°</output>
+          <input id="${id}-flare-rotate" data-kind="flareRotate" data-index="${i}" type="range" min="-60" max="60" step="1" value="60">
+          <output>60°</output>
         </label>
         <label class="control-row" for="${id}-flare-opacity-1">
           <span>Opacity 1</span>
-          <input id="${id}-flare-opacity-1" data-kind="flareOpacity1" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.82">
-          <output>0.82</output>
+          <input id="${id}-flare-opacity-1" data-kind="flareOpacity1" data-index="${i}" type="range" min="0" max="1" step="0.01" value="1">
+          <output>1.00</output>
         </label>
         <label class="control-row" for="${id}-flare-opacity-2">
           <span>Opacity 2</span>
@@ -1379,8 +1399,8 @@
         </label>
         <label class="control-row" for="${id}-flare-opacity-3">
           <span>Opacity 3</span>
-          <input id="${id}-flare-opacity-3" data-kind="flareOpacity3" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.82">
-          <output>0.82</output>
+          <input id="${id}-flare-opacity-3" data-kind="flareOpacity3" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.62">
+          <output>0.62</output>
         </label>
         ` : ''}
         ${isCloud ? `
@@ -1603,12 +1623,15 @@
         if (!input.dataset.kind) return;
         const target = controlled[Number(input.dataset.index)];
         if (input.dataset.kind === 'rhythm') input.value = 2;
-        if (input.dataset.kind === 'speed' || input.dataset.kind === 'direction') input.value = 1;
+        if (input.dataset.kind === 'speed') input.value = target.classList.contains('rays') ? 0.2 : 1;
+        if (input.dataset.kind === 'direction') input.value = 1;
         if (input.dataset.kind === 'groupScale') input.value = target.dataset.initialGroupScale || 1;
-        if (input.dataset.kind === 'flareScale') input.value = 2;
-        if (input.dataset.kind === 'flareDistance') input.value = 1;
-        if (input.dataset.kind === 'flareRotate') input.value = 18;
-        if (input.dataset.kind === 'flareOpacity1' || input.dataset.kind === 'flareOpacity2' || input.dataset.kind === 'flareOpacity3') input.value = 0.82;
+        if (input.dataset.kind === 'flareScale') input.value = 1.35;
+        if (input.dataset.kind === 'flareDistance') input.value = 0;
+        if (input.dataset.kind === 'flareRotate') input.value = 60;
+        if (input.dataset.kind === 'flareOpacity1') input.value = 1;
+        if (input.dataset.kind === 'flareOpacity2') input.value = 0.82;
+        if (input.dataset.kind === 'flareOpacity3') input.value = 0.62;
         if (input.dataset.kind === 'x') input.value = target.dataset.initialX;
         if (input.dataset.kind === 'y') input.value = target.dataset.initialY;
         if (input.type === 'number' && input.dataset.default) input.value = input.dataset.default;
