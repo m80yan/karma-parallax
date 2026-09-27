@@ -1149,8 +1149,10 @@
     const cards = [];
     const controlsStorageKey = 'karma-animation-settings';
     const controlsVersionKey = 'karma-animation-settings-version';
-    const controlsVersion = '2026-09-26-score-logical-coords';
+    const controlsVersion = '2026-09-26-cloud-xy-dedicated';
     const cloudStorageKey = 'karma-cloud-settings';
+    const cloudVersionKey = 'karma-cloud-settings-version';
+    const cloudVersion = '2026-09-26-cloud-xy-dedicated';
     let paused = false;
     let selectedCard = null;
     let selectedTarget = null;
@@ -1173,11 +1175,12 @@
     function cloudScreenPosition(target) {
       const shell = document.querySelector('.phone-shell').getBoundingClientRect();
       const rect = target.getBoundingClientRect();
+      const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stage-scale')) || 1;
       return {
-        x: rect.left - shell.left,
-        y: rect.top - shell.top,
-        width: rect.width,
-        height: rect.height
+        x: (rect.left - shell.left) / scale,
+        y: (rect.top - shell.top) / scale,
+        width: rect.width / scale,
+        height: rect.height / scale
       };
     }
 
@@ -1234,12 +1237,14 @@
 
     function saveCloudSettings() {
       localStorage.setItem(cloudStorageKey, JSON.stringify(cloudSettings()));
+      localStorage.setItem(cloudVersionKey, cloudVersion);
     }
 
     function allControlSettings() {
       return controlled.map((target, index) => {
         const settings = { label: target.dataset.control };
         document.querySelectorAll(`input[data-index="${index}"][data-kind]`).forEach((input) => {
+          if (target.classList.contains('cloud') && (input.dataset.kind === 'x' || input.dataset.kind === 'y')) return;
           settings[input.dataset.kind] = input.value;
         });
         return settings;
@@ -1264,8 +1269,10 @@
         JSON.parse(saved).forEach((setting) => {
           const index = controlled.findIndex((target) => target.dataset.control === setting.label);
           if (index < 0) return;
+          const target = controlled[index];
           Object.entries(setting).forEach(([kind, value]) => {
             if (kind === 'label') return;
+            if (target.classList.contains('cloud') && (kind === 'x' || kind === 'y')) return;
             const input = document.querySelector(`input[data-index="${index}"][data-kind="${kind}"]`);
             if (!input) return;
             input.value = value;
@@ -1296,6 +1303,7 @@
           }
         }
       });
+      saveCloudSettings();
       localStorage.setItem(controlsStorageKey, JSON.stringify(allControlSettings()));
       localStorage.setItem(controlsVersionKey, controlsVersion);
     }
@@ -1312,6 +1320,10 @@
     }
 
     function restoreCloudSettings() {
+      if (localStorage.getItem(cloudVersionKey) !== cloudVersion) {
+        localStorage.removeItem(cloudStorageKey);
+        return;
+      }
       const saved = localStorage.getItem(cloudStorageKey);
       if (!saved) return;
       try {
@@ -1583,7 +1595,14 @@
       controlList.appendChild(card);
     });
 
-    document.querySelectorAll('.compiler input[data-kind]').forEach(applyControl);
+    document.querySelectorAll('.compiler input[data-kind]').forEach((input) => {
+      const target = controlled[Number(input.dataset.index)];
+      if (target?.classList.contains('cloud') && (input.dataset.kind === 'x' || input.dataset.kind === 'y')) {
+        input.parentElement.querySelector('output').textContent = Math.round(Number(input.value));
+        return;
+      }
+      applyControl(input);
+    });
     restoreAllSettings();
     applyRequestedDefaults();
 
