@@ -501,9 +501,9 @@
 
     .score {
       position: absolute;
-      left: 70.22px;
+      left: 31.5px;
       top: 54.5px;
-      width: 124px;
+      width: 198px;
       height: 87px;
       font-family: var(--font-score);
       font-size: var(--score-font-size);
@@ -519,7 +519,7 @@
       grid-template-columns: repeat(var(--score-digits, 2), var(--score-digit-width));
       column-gap: var(--score-letter-space);
       align-items: baseline;
-      justify-content: start;
+      justify-content: center;
       width: max-content;
       height: 100%;
       margin: 0 auto;
@@ -1149,7 +1149,7 @@
     const cards = [];
     const controlsStorageKey = 'karma-animation-settings';
     const controlsVersionKey = 'karma-animation-settings-version';
-    const controlsVersion = '2026-09-26-flare-defaults';
+    const controlsVersion = '2026-09-26-score-logical-coords';
     const cloudStorageKey = 'karma-cloud-settings';
     let paused = false;
     let selectedCard = null;
@@ -1182,11 +1182,13 @@
     }
 
     function scoreScreenPosition() {
-      const shell = document.querySelector('.phone-shell').getBoundingClientRect();
-      const rect = scoreBox.getBoundingClientRect();
+      const infoX = parseFloat(getComputedStyle(document.querySelector('.info')).left) || 0;
+      const infoY = parseFloat(getComputedStyle(document.querySelector('.info')).top) || 0;
+      const scoreX = parseFloat(scoreBox.style.left || getComputedStyle(scoreBox).left) || 0;
+      const scoreY = parseFloat(scoreBox.style.top || getComputedStyle(scoreBox).top) || 0;
       return {
-        x: rect.left - shell.left,
-        y: rect.top - shell.top
+        x: infoX + scoreX,
+        y: infoY + scoreY
       };
     }
 
