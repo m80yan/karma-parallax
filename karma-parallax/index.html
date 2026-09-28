@@ -417,6 +417,37 @@
       animation: none;
     }
 
+    .ladybug {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: block;
+      width: 32px;
+      height: 32px;
+      opacity: 0;
+      pointer-events: auto;
+      transform-origin: center;
+      will-change: transform, opacity;
+      --speed: 1;
+      --ladybug-appearance: 1;
+      --ladybug-size-ratio: 4;
+    }
+
+    .ladybug.is-visible {
+      opacity: 1;
+    }
+
+    .ladybug img {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: rotate(var(--ladybug-rotation, 0deg));
+      transform-origin: center;
+    }
+
     .clouds {
       left: 39.14px;
       top: 496.65px;
@@ -1072,30 +1103,36 @@
       <div class="layer foreground-bushes">
         <img class="bush-base" src="assets/bush-base.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 15 breathe" style="left:29.01px;top:62.16px;width:49.49px;height:49.35px;animation-delay:0s" src="assets/bush-shape-15.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 01 rotate" style="left:-27px;top:31px;width:83px;height:84px;animation-delay:.2s" src="assets/bush-ball-01.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 01 rotate" style="left:-27px;top:31px;width:86px;height:86px;animation-delay:.2s" src="assets/bush-ball-01.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 14 breathe" style="left:174.93px;top:82.58px;width:47.79px;height:47.65px;animation-delay:.4s" src="assets/bush-shape-14.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 02 rotate" style="left:203px;top:73px;width:75px;height:75px;animation-delay:.6s" src="assets/bush-ball-02.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 03 rotate" style="left:265px;top:83px;width:38px;height:37px;animation-delay:.8s" src="assets/bush-ball-03.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 04 rotate" style="left:284px;top:81px;width:31px;height:31px;animation-delay:1s" src="assets/bush-ball-04.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 02 rotate" style="left:200px;top:74px;width:78px;height:78px;animation-delay:.6s" src="assets/bush-ball-02.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 03 rotate" style="left:265px;top:83px;width:38px;height:38px;animation-delay:.8s" src="assets/bush-ball-03.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 04 rotate" style="left:285px;top:81px;width:30px;height:30px;animation-delay:1s" src="assets/bush-ball-04.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 13 breathe" style="left:304.64px;top:72.37px;width:56.32px;height:56.16px;animation-delay:1.2s" src="assets/bush-shape-13.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 12 breathe" style="left:321.51px;top:54.73px;width:55px;height:54px;animation-delay:1.4s" src="assets/bush-shape-12.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 05 rotate" style="left:351px;top:57px;width:56px;height:56px;animation-delay:1.6s" src="assets/bush-ball-05.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 05 rotate" style="left:351px;top:57px;width:54px;height:54px;animation-delay:1.6s" src="assets/bush-ball-05.svg" alt="">
         <img class="bush-item bush-ball animatable" data-control="BushBall 06 rotate" style="left:302px;top:69px;width:62px;height:62px;animation-delay:1.8s" src="assets/bush-ball-06.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 11 breathe" style="left:415.57px;top:68.12px;width:102.4px;height:102.11px;animation-delay:2s" src="assets/bush-shape-11.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 10 breathe" style="left:300.37px;top:114.92px;width:59.73px;height:59.57px;animation-delay:2.2s" src="assets/bush-shape-10.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 07 rotate" style="left:345px;top:67px;width:134px;height:134px;animation-delay:2.4s" src="assets/bush-ball-07.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 07 rotate" style="left:345px;top:67px;width:136px;height:136px;animation-delay:2.4s" src="assets/bush-ball-07.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 09 breathe" style="left:509.44px;top:28.97px;width:52.91px;height:52.76px;animation-delay:2.6s" src="assets/bush-shape-09.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 08 breathe" style="left:541.87px;top:30.68px;width:34.13px;height:34.04px;animation-delay:2.8s" src="assets/bush-shape-08.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 07 breathe" style="left:610.99px;top:.04px;width:54.61px;height:54.46px;animation-delay:3s" src="assets/bush-shape-07.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 06 breathe" style="left:353.28px;top:116.62px;width:174.08px;height:173.59px;animation-delay:3.2s" src="assets/bush-shape-06.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 08 rotate" style="left:457px;top:48px;width:108px;height:108px;animation-delay:3.4s" src="assets/bush-ball-08.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 08 rotate" style="left:453px;top:44px;width:110px;height:110px;animation-delay:3.4s" src="assets/bush-ball-08.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 05 breathe" style="left:458px;top:127px;width:231px;height:231px;animation-delay:3.6s" src="assets/bush-shape-05.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 04 breathe" style="left:549.55px;top:18.76px;width:102.4px;height:102.11px;animation-delay:3.8s" src="assets/bush-shape-04.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 09 rotate" style="left:55px;top:53px;width:64px;height:64px;animation-delay:4s" src="assets/bush-ball-09.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 09 rotate" style="left:58px;top:53px;width:70px;height:70px;animation-delay:4s" src="assets/bush-ball-09.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 03 breathe" style="left:95.57px;top:50.25px;width:42.67px;height:42.55px;animation-delay:4.2s" src="assets/bush-shape-03.svg" alt="">
-        <img class="bush-item bush-ball animatable" data-control="BushBall 10 rotate" style="left:106px;top:66px;width:88px;height:86px;animation-delay:4.4s" src="assets/bush-ball-10.svg" alt="">
+        <img class="bush-item bush-ball animatable" data-control="BushBall 10 rotate" style="left:106px;top:66px;width:86px;height:86px;animation-delay:4.4s" src="assets/bush-ball-10.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 02 breathe" style="left:125px;top:113px;width:96.43px;height:96.16px;animation-delay:4.6s" src="assets/bush-shape-02.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 16 breathe" style="left:103px;top:165px;width:112px;height:112px;animation-delay:5s" src="assets/bush-shape-16.svg" alt="">
         <img class="bush-item bush-shape animatable" data-control="BushShape 01 breathe" style="left:-18px;top:83px;width:158.72px;height:158.27px;animation-delay:4.8s" src="assets/bush-shape-01.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 17 breathe" style="left:172px;top:150px;width:176px;height:176px;animation-delay:5.2s" src="assets/bush-shape-17.svg" alt="">
+        <img class="bush-item bush-shape animatable" data-control="BushShape 18 breathe" style="left:257px;top:156px;width:240px;height:240px;animation-delay:5.4s" src="assets/bush-shape-18.svg" alt="">
+        <span class="ladybug" id="ladyBug" data-control="LadyBug path"><img src="assets/ladybug-frames/ladybug-frame-01.svg" alt=""></span>
+        <span class="ladybug" id="ladyBugReverse" data-control="LadyBug reverse path"><img src="assets/ladybug-frames/ladybug-frame-01.svg" alt=""></span>
+        <span class="ladybug" id="ladyBugThird" data-control="LadyBug third path"><img src="assets/ladybug-frames/ladybug-frame-01.svg" alt=""></span>
       </div>
       </section>
     </div>
@@ -1141,6 +1178,10 @@
     const scoreReel = document.getElementById('scoreReel');
     const spinRays = document.querySelector('.spin-rays-green');
     const lensFlares = document.querySelector('.rays');
+    const foregroundBushes = document.querySelector('.foreground-bushes');
+    const ladyBug = document.getElementById('ladyBug');
+    const ladyBugReverse = document.getElementById('ladyBugReverse');
+    const ladyBugThird = document.getElementById('ladyBugThird');
     const screen = document.querySelector('.screen');
     const statusTime = document.getElementById('statusTime');
     const activityItems = [...document.querySelectorAll('.copy li')];
@@ -1150,6 +1191,23 @@
     let spinRayTick = 0;
     let scoreCycleStep = 0;
     let scoreResetting = false;
+    const ladyBugRuns = new Map();
+    const ladyBugTargetCursors = new Map([[ladyBug, 0], [ladyBugReverse, 0], [ladyBugThird, 0]]);
+    let pendingLadyBugTargetIndexes = null;
+    let paused = false;
+    const ladyBugFrames = [
+      'assets/ladybug-frames/ladybug-frame-01.svg',
+      'assets/ladybug-frames/ladybug-frame-02.svg',
+      'assets/ladybug-frames/ladybug-frame-03.svg',
+      'assets/ladybug-frames/ladybug-frame-04.svg',
+      'assets/ladybug-frames/ladybug-frame-05.svg',
+      'assets/ladybug-frames/ladybug-frame-06.svg',
+      'assets/ladybug-frames/ladybug-frame-07.svg',
+      'assets/ladybug-frames/ladybug-frame-08.svg'
+    ];
+    const ladyBugFrameWidth = 76;
+    const ladyBugFrameHeight = 44;
+    const ladyBugBodyBase = 32;
 
     function formatStatusTime(date) {
       const suffix = date.getHours() >= 12 ? 'PM' : 'AM';
@@ -1263,6 +1321,379 @@
     renderScore(score);
     setInterval(advanceScoreCycle, 2000);
 
+    function styleNumber(target, property, fallback = 0) {
+      return Number.parseFloat(target.style[property] || getComputedStyle(target)[property]) || fallback;
+    }
+
+    function ladyBugSettings(bug = ladyBug) {
+      return {
+        speed: Math.max(Number.parseFloat(bug.style.getPropertyValue('--speed')) || 1, 0.1),
+        appearance: Math.max(Number.parseFloat(bug.style.getPropertyValue('--ladybug-appearance')) || 1, 0.2),
+        sizeRatio: Number.parseFloat(bug.style.getPropertyValue('--ladybug-size-ratio')) || 4
+      };
+    }
+
+    function setLadyBugFrame(bug, frameIndex) {
+      const image = bug.querySelector('img');
+      if (image) image.src = ladyBugFrames[frameIndex] || ladyBugFrames[0];
+    }
+
+    function ladyBugBodySize(item, settings) {
+      return Math.max(9, Math.min(64, Math.min(item.width, item.height) / settings.sizeRatio));
+    }
+
+    function applyLadyBugDisplaySize(bug, bodySize) {
+      const scale = bodySize / ladyBugBodyBase;
+      bug.style.width = `${ladyBugFrameWidth * scale}px`;
+      bug.style.height = `${ladyBugFrameHeight * scale}px`;
+      bug.dataset.ladybugBodySize = String(bodySize);
+    }
+
+    function ladyBugTargets(order = 'large-first') {
+      const targets = [...document.querySelectorAll('.foreground-bushes .bush-item')].map((target, index) => {
+        const left = styleNumber(target, 'left');
+        const top = styleNumber(target, 'top');
+        const width = styleNumber(target, 'width');
+        const height = styleNumber(target, 'height');
+        return {
+          target,
+          index,
+          left,
+          top,
+          width,
+          height,
+          radius: Math.min(width, height) / 2
+        };
+      }).filter((item) => item.width >= 34 && item.height >= 34)
+        .sort((a, b) => Math.min(b.width, b.height) - Math.min(a.width, a.height));
+      return order === 'small-first' ? targets.reverse() : targets;
+    }
+
+    function scheduleLadyBug(bug = ladyBug, order = 'large-first', delay = 1800) {
+      window.setTimeout(() => {
+        if (paused) {
+          scheduleLadyBug(bug, order, 320);
+          return;
+        }
+        spawnLadyBug(bug, order);
+      }, delay);
+    }
+
+    function ladyBugItemsAdjacent(a, b) {
+      if (!a || !b) return false;
+      if (a.target === b.target) return true;
+      const ax = a.left + a.width / 2;
+      const ay = a.top + a.height / 2;
+      const bx = b.left + b.width / 2;
+      const by = b.top + b.height / 2;
+      const distance = Math.hypot(ax - bx, ay - by);
+      return distance < (a.radius + b.radius) * 1.08;
+    }
+
+    function ladyBugConflictsWithActiveRun(bug, item) {
+      return [...ladyBugRuns.entries()].some(([activeBug, run]) => {
+        return activeBug !== bug && ladyBugItemsAdjacent(item, run.item);
+      });
+    }
+
+    function syncLadyBugPendingTargets(targets) {
+      const targetIndexes = new Set(targets.map((item) => item.index));
+      if (!pendingLadyBugTargetIndexes) {
+        pendingLadyBugTargetIndexes = new Set(targetIndexes);
+        return;
+      }
+      pendingLadyBugTargetIndexes.forEach((index) => {
+        if (!targetIndexes.has(index)) pendingLadyBugTargetIndexes.delete(index);
+      });
+      if (!pendingLadyBugTargetIndexes.size) {
+        pendingLadyBugTargetIndexes = new Set(targetIndexes);
+      }
+    }
+
+    function chooseLadyBugTarget(bug, targets) {
+      syncLadyBugPendingTargets(targets);
+      const pendingTargets = targets.filter((item) => pendingLadyBugTargetIndexes.has(item.index));
+      for (const item of pendingTargets) {
+        if (ladyBugConflictsWithActiveRun(bug, item)) continue;
+        return item;
+      }
+      const cursor = ladyBugTargetCursors.get(bug) || 0;
+      for (let offset = 0; offset < targets.length; offset += 1) {
+        const index = (cursor + offset) % targets.length;
+        const item = targets[index];
+        if (ladyBugConflictsWithActiveRun(bug, item)) continue;
+        ladyBugTargetCursors.set(bug, index + 1);
+        return item;
+      }
+      ladyBugTargetCursors.set(bug, cursor + 1);
+      return null;
+    }
+
+    function spawnLadyBug(bug = ladyBug, order = 'large-first') {
+      const targets = ladyBugTargets(order);
+      if (!targets.length) return scheduleLadyBug(bug, order, 3000);
+      const settings = ladyBugSettings(bug);
+      const item = chooseLadyBugTarget(bug, targets);
+      if (!item) return scheduleLadyBug(bug, order, 620 / settings.appearance);
+      const size = ladyBugBodySize(item, settings);
+      const direction = Math.random() > 0.5 ? 1 : -1;
+      const startAngle = visibleLadyBugStartAngle(item, size);
+      if (startAngle == null) return scheduleLadyBug(bug, order, 260 / settings.appearance);
+      pendingLadyBugTargetIndexes?.delete(item.index);
+      const turns = 0.18 + Math.random() * 0.54;
+      const angleDistance = turns * Math.PI * 2 * direction;
+      const duration = Math.max(1600, Math.abs(turns) * 8200 / settings.speed);
+      const centerX = item.left + item.width / 2;
+      const centerY = item.top + item.height / 2;
+      const radius = item.radius + size * 0.04;
+
+      foregroundBushes.appendChild(bug);
+
+      setLadyBugFrame(bug, 0);
+      applyLadyBugDisplaySize(bug, size);
+      bug.dataset.ladybugTargetIndex = String(item.index);
+      bug.dataset.ladybugOrder = order;
+      bug.style.opacity = '1';
+      bug.classList.add('is-visible');
+      ladyBugRuns.set(bug, {
+        start: performance.now(),
+        duration,
+        order,
+        item,
+        centerX,
+        centerY,
+        radius,
+        baseRadius: item.radius,
+        startAngle,
+        angleDistance,
+        direction,
+        settings
+      });
+      requestAnimationFrame((now) => updateLadyBug(bug, now));
+    }
+
+    function resizeLadyBug(bug) {
+      const run = ladyBugRuns.get(bug);
+      if (!run) return;
+      const settings = ladyBugSettings(bug);
+      const size = ladyBugBodySize(run.item, settings);
+      applyLadyBugDisplaySize(bug, size);
+      run.radius = run.baseRadius + size * 0.04;
+      run.settings = settings;
+    }
+
+    function visibleLadyBugStartAngle(item, size) {
+      for (let i = 0; i < 24; i += 1) {
+        const angle = Math.random() * Math.PI * 2;
+        const x = item.left + item.width / 2 + Math.cos(angle) * (item.radius + size * 0.04);
+        const y = item.top + item.height / 2 + Math.sin(angle) * (item.radius + size * 0.04);
+        if (!ladyBugPointOccluded(item, x, y, size)) return angle;
+      }
+      return null;
+    }
+
+    function ladyBugCircleOverlaps(a, b) {
+      const ax = a.left + a.width / 2;
+      const ay = a.top + a.height / 2;
+      const bx = b.left + b.width / 2;
+      const by = b.top + b.height / 2;
+      return Math.hypot(ax - bx, ay - by) < a.radius + Math.min(b.width, b.height) / 2;
+    }
+
+    function ladyBugCoverChain(item) {
+      const covers = [];
+      const visited = new Set([item.index]);
+      const queue = [item];
+      const targets = ladyBugTargets();
+      while (queue.length) {
+        const base = queue.shift();
+        targets.forEach((cover) => {
+          if (visited.has(cover.index) || cover.index <= base.index) return;
+          if (!ladyBugCircleOverlaps(base, cover)) return;
+          visited.add(cover.index);
+          covers.push(cover);
+          queue.push(cover);
+        });
+      }
+      return covers.sort((a, b) => b.index - a.index);
+    }
+
+    function ladyBugCoveringCircle(item, x, y, size) {
+      return ladyBugCoverChain(item).find((cover) => {
+        const cx = cover.left + cover.width / 2;
+        const cy = cover.top + cover.height / 2;
+        const bugDistance = Math.hypot(x - cx, y - cy);
+        return bugDistance < Math.max(cover.width, cover.height) / 2 + size * 0.5;
+      });
+    }
+
+    function ladyBugPointOccluded(item, x, y, size) {
+      return Boolean(ladyBugCoveringCircle(item, x, y, size));
+    }
+
+    function applyLadyBugCoverMask(bug, cover, x, y, size) {
+      if (!cover) {
+        bug.style.webkitMaskImage = '';
+        bug.style.maskImage = '';
+        return;
+      }
+      const coverX = cover.left + cover.width / 2;
+      const coverY = cover.top + cover.height / 2;
+      const maskX = size / 2 + coverX - x;
+      const maskY = size / 2 + coverY - y;
+      const maskRadius = Math.max(cover.width, cover.height) / 2;
+      const mask = `radial-gradient(circle ${maskRadius}px at ${maskX}px ${maskY}px, transparent 0 ${maskRadius}px, #000 ${maskRadius + 0.5}px)`;
+      bug.style.webkitMaskImage = mask;
+      bug.style.maskImage = mask;
+    }
+
+    function finishLadyBugRun(bug = ladyBug, delay = 900) {
+      const run = ladyBugRuns.get(bug);
+      bug.classList.remove('is-visible');
+      bug.style.opacity = '0';
+      bug.style.setProperty('--ladybug-rotation', '0deg');
+      delete bug.dataset.ladybugTargetIndex;
+      applyLadyBugCoverMask(bug);
+      ladyBugRuns.delete(bug);
+      scheduleLadyBug(bug, run?.order || bug.dataset.ladybugOrder || 'large-first', delay);
+    }
+
+    function finishLadyBugFlight(bug = ladyBug, delay = 900) {
+      bug.classList.remove('is-visible');
+      bug.style.opacity = '0';
+      bug.style.setProperty('--ladybug-rotation', '0deg');
+      bug.style.transform = '';
+      delete bug.dataset.ladybugTargetIndex;
+      applyLadyBugCoverMask(bug);
+      scheduleLadyBug(bug, bug.dataset.ladybugOrder || 'large-first', delay);
+    }
+
+    function startLadyBugTakeoff(bug = ladyBug) {
+      const run = ladyBugRuns.get(bug);
+      if (!run) return;
+      ladyBugRuns.delete(bug);
+      delete bug.dataset.ladybugTargetIndex;
+      applyLadyBugCoverMask(bug);
+      const nextDelay = (1300 + Math.random() * 4200) / run.settings.appearance;
+      bug.style.setProperty('--ladybug-rotation', '0deg');
+      [1, 2, 3, 4, 5, 6].forEach((frameIndex, index) => {
+        window.setTimeout(() => {
+          if (bug.classList.contains('is-visible')) setLadyBugFrame(bug, frameIndex);
+        }, index * 90);
+      });
+      window.setTimeout(() => {
+        if (!bug.classList.contains('is-visible')) return;
+        setLadyBugFrame(bug, 7);
+        startLadyBugFlight(bug, run, nextDelay);
+      }, 620);
+    }
+
+    function startLadyBugFlight(bug, run, nextDelay) {
+      const startX = run.lastX ?? run.centerX;
+      const startY = run.lastY ?? run.centerY;
+      const duration = 2300;
+      const minX = 0;
+      const maxX = 640;
+      const backgroundLimitY = 667.13 - 857 + 16;
+      const direction = startX < 320 ? 1 : -1;
+      const targetY = Math.max(backgroundLimitY, startY - 250 - Math.random() * 80);
+      const endX = Math.min(maxX, Math.max(minX, startX + direction * (70 + Math.random() * 80)));
+      const control1 = {
+        x: Math.min(maxX, Math.max(minX, startX + direction * (18 + Math.random() * 18))),
+        y: Math.max(backgroundLimitY, startY - (70 + Math.random() * 45))
+      };
+      const control2 = {
+        x: Math.min(maxX, Math.max(minX, startX - direction * (54 + Math.random() * 44))),
+        y: Math.max(backgroundLimitY, startY - (150 + Math.random() * 50))
+      };
+      const end = { x: endX, y: targetY };
+      const started = performance.now();
+      const curvePoint = (t) => {
+        const u = 1 - t;
+        return {
+          x: u ** 3 * startX + 3 * u ** 2 * t * control1.x + 3 * u * t ** 2 * control2.x + t ** 3 * end.x,
+          y: u ** 3 * startY + 3 * u ** 2 * t * control1.y + 3 * u * t ** 2 * control2.y + t ** 3 * end.y
+        };
+      };
+      const fly = (now) => {
+        const t = Math.min((now - started) / duration, 1);
+        const ease = t < 0.18
+          ? (t / 0.18) ** 2 * 0.18
+          : t > 0.76
+            ? 1 - ((1 - t) / 0.24) ** 2 * 0.24
+            : t;
+        const point = curvePoint(ease);
+        const nextPoint = curvePoint(Math.min(1, ease + 0.02));
+        const cruise = Math.sin(t * Math.PI * 5) * 6 * (1 - t);
+        const x = Math.min(maxX, Math.max(minX, point.x + Math.sin(t * Math.PI * 2.5) * 6 * (1 - t)));
+        const y = Math.max(backgroundLimitY, point.y + cruise);
+        const pathAngle = Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) * 180 / Math.PI + 90;
+        const scale = 1 - t * 0.46;
+        bug.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
+        bug.style.setProperty('--ladybug-rotation', `${pathAngle}deg`);
+        bug.style.opacity = String(Math.max(0, 1 - t));
+        if (t < 1) {
+          requestAnimationFrame(fly);
+          return;
+        }
+        finishLadyBugFlight(bug, nextDelay);
+      };
+      requestAnimationFrame(fly);
+    }
+
+    function ladyBugIntersectsOtherBug(bug, x, y, size) {
+      return [...ladyBugRuns.entries()].some(([activeBug, run]) => {
+        if (activeBug === bug) return false;
+        const otherSize = Number.parseFloat(activeBug.dataset.ladybugBodySize) || 32;
+        const progress = Math.min((performance.now() - run.start) / run.duration, 1);
+        const angle = run.startAngle + run.angleDistance * progress;
+        const otherX = run.centerX + Math.cos(angle) * run.radius;
+        const otherY = run.centerY + Math.sin(angle) * run.radius;
+        return Math.hypot(x - otherX, y - otherY) < (size + otherSize) * 0.58;
+      });
+    }
+
+    function updateLadyBug(bug, now) {
+      if (!ladyBugRuns.has(bug)) return;
+      const run = ladyBugRuns.get(bug);
+      if (paused) {
+        if (!run.pausedAt) run.pausedAt = now;
+        return;
+      }
+      if (run.pausedAt) {
+        run.start += now - run.pausedAt;
+        run.pausedAt = null;
+      }
+      const elapsed = now - run.start;
+      let progress = Math.min(elapsed / run.duration, 1);
+      const angle = run.startAngle + run.angleDistance * progress;
+      const x = run.centerX + Math.cos(angle) * run.radius;
+      const y = run.centerY + Math.sin(angle) * run.radius;
+      run.lastX = x;
+      run.lastY = y;
+      const size = Number.parseFloat(bug.dataset.ladybugBodySize) || 32;
+      const tangentAngle = angle + run.direction * Math.PI / 2;
+      const rotation = tangentAngle * 180 / Math.PI + 90;
+      bug.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+      bug.style.setProperty('--ladybug-rotation', `${rotation}deg`);
+      if (ladyBugIntersectsOtherBug(bug, x, y, size)) {
+        finishLadyBugRun(bug, 480 / run.settings.appearance);
+        return;
+      }
+      const cover = ladyBugCoveringCircle(run.item, x, y, size);
+      applyLadyBugCoverMask(bug, cover, x, y, size);
+      bug.style.opacity = '1';
+      if (progress < 1) {
+        requestAnimationFrame((nextNow) => updateLadyBug(bug, nextNow));
+        return;
+      }
+      startLadyBugTakeoff(bug);
+    }
+
+    scheduleLadyBug(ladyBug, 'large-first', 1200);
+    scheduleLadyBug(ladyBugReverse, 'small-first', 2300);
+    scheduleLadyBug(ladyBugThird, 'large-first', 3400);
+
     setInterval(() => {
       screen.dataset.side = screen.dataset.side === 'left' ? 'right' : 'left';
     }, 8000);
@@ -1286,7 +1717,6 @@
     const cloudStorageKey = 'karma-cloud-settings';
     const cloudVersionKey = 'karma-cloud-settings-version';
     const cloudVersion = '2026-09-26-cloud-xy-dedicated';
-    let paused = false;
     let selectedCard = null;
     let selectedTarget = null;
 
@@ -1394,10 +1824,10 @@
     function restoreAllSettings() {
       if (localStorage.getItem(controlsVersionKey) !== controlsVersion) {
         localStorage.removeItem(controlsStorageKey);
-        return;
+        return false;
       }
       const saved = localStorage.getItem(controlsStorageKey);
-      if (!saved) return;
+      if (!saved) return false;
       try {
         JSON.parse(saved).forEach((setting) => {
           const index = controlled.findIndex((target) => target.dataset.control === setting.label);
@@ -1412,8 +1842,10 @@
             applyControl(input);
           });
         });
+        return true;
       } catch {
         localStorage.removeItem(controlsStorageKey);
+        return false;
       }
     }
 
@@ -1482,6 +1914,7 @@
       const isScore = target === scoreEl;
       const isGroupScale = target.classList.contains('group-scale-control');
       const isRays = target.classList.contains('rays');
+      const isLadyBug = target.classList.contains('ladybug');
       const groupScale = isGroupScale ? (target.style.getPropertyValue('--group-scale') || '1') : '1';
       const speedValue = isRays ? '0.2' : '1';
       const directionValue = '1';
@@ -1548,6 +1981,18 @@
           <span>Opacity 3</span>
           <input id="${id}-flare-opacity-3" data-kind="flareOpacity3" data-index="${i}" type="range" min="0" max="1" step="0.01" value="0.62">
           <output>0.62</output>
+        </label>
+        ` : ''}
+        ${isLadyBug ? `
+        <label class="control-row" for="${id}-ladybug-appearance">
+          <span>Appearance</span>
+          <input id="${id}-ladybug-appearance" data-kind="ladybugAppearance" data-index="${i}" type="range" min="0.2" max="3" step="0.05" value="1">
+          <output>1.00</output>
+        </label>
+        <label class="control-row" for="${id}-ladybug-size-ratio">
+          <span>Size ratio</span>
+          <input id="${id}-ladybug-size-ratio" data-kind="ladybugSizeRatio" data-index="${i}" type="range" min="4" max="6.5" step="0.1" value="4">
+          <output>1:5.0</output>
         </label>
         ` : ''}
         ${isCloud ? `
@@ -1663,6 +2108,15 @@
         target.style.setProperty('--flare-opacity-3', input.value);
         output.textContent = Number(input.value).toFixed(2);
       }
+      if (input.dataset.kind === 'ladybugAppearance') {
+        target.style.setProperty('--ladybug-appearance', input.value);
+        output.textContent = Number(input.value).toFixed(2);
+      }
+      if (input.dataset.kind === 'ladybugSizeRatio') {
+        target.style.setProperty('--ladybug-size-ratio', input.value);
+        output.textContent = `1:${Number(input.value).toFixed(1)}`;
+        resizeLadyBug(target);
+      }
       if (input.dataset.kind === 'x') {
         const clouds = document.querySelector('.clouds');
         const desired = Number(input.value);
@@ -1736,8 +2190,7 @@
       }
       applyControl(input);
     });
-    restoreAllSettings();
-    applyRequestedDefaults();
+    if (!restoreAllSettings()) applyRequestedDefaults();
 
     controlList.addEventListener('input', (event) => {
       if (event.target.matches('input[data-kind]')) applyControl(event.target);
@@ -1786,6 +2239,8 @@
         if (input.dataset.kind === 'flareOpacity1') input.value = 1;
         if (input.dataset.kind === 'flareOpacity2') input.value = 0.82;
         if (input.dataset.kind === 'flareOpacity3') input.value = 0.62;
+        if (input.dataset.kind === 'ladybugAppearance') input.value = 1;
+        if (input.dataset.kind === 'ladybugSizeRatio') input.value = 4;
         if (input.dataset.kind === 'x') input.value = target.dataset.initialX;
         if (input.dataset.kind === 'y') input.value = target.dataset.initialY;
         if (input.type === 'number' && input.dataset.default) input.value = input.dataset.default;
@@ -1799,6 +2254,11 @@
       document.querySelectorAll('.animatable, .score-value, .grass-dot').forEach((el) => {
         el.style.animationPlayState = paused ? 'paused' : 'running';
       });
+      if (!paused) {
+        ladyBugRuns.forEach((_, bug) => {
+          requestAnimationFrame((now) => updateLadyBug(bug, now));
+        });
+      }
       event.currentTarget.textContent = paused ? 'Resume all' : 'Pause all';
     });
 
